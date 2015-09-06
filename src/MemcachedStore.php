@@ -31,7 +31,12 @@ class MemcachedStore extends IlluminateMemcachedStore implements StoreMulti
      */
     public function getMulti(array $keys)
     {
-        return array_combine(array_values($keys), array_map([$this, 'get'], $keys));
+        $preserve = defined(get_class($this->memcached).'::GET_PRESERVE_ORDER') ? constant(get_class($this->memcached).'::GET_PRESERVE_ORDER') : null;
+        $values = $this->memcached->getMulti($this->prefixKeys($keys), null, $preserve);
+
+        if ($this->memcached->getResultCode() === 0) {
+            return $values;
+        }
     }
 
     /**
@@ -60,12 +65,7 @@ class MemcachedStore extends IlluminateMemcachedStore implements StoreMulti
      */
     public function putMulti(array $items, $minutes)
     {
-        $time = [];
-        while (count($time) < count($items)) {
-            $time[] = $minutes;
-        }
-
-        array_map([$this, 'put'], array_keys($items), array_values($items), $time);
+        $this->memcached->setMulti(array_combine($this->prefixKeys(array_keys($items)), array_values($items)), $minutes * 60);
     }
 
     /**
@@ -162,7 +162,14 @@ class MemcachedStore extends IlluminateMemcachedStore implements StoreMulti
      */
     public function forgetMulti(array $keys)
     {
-        return array_combine(array_values($keys), array_map([$this, 'forget'], $keys));
+        $result = $this->memcached->deleteMulti($this->prefixKeys($keys));
+
+        $return = [];
+        foreach ($keys as $key) {
+            $return[$key] = $result;
+        }
+        
+        return $return;
     }
 
     /**
@@ -186,5 +193,18 @@ class MemcachedStore extends IlluminateMemcachedStore implements StoreMulti
 
             return $callback($key, $value);
         }, array_keys($items), array_values($items)));
+    }
+
+    /**
+     * Prefix and array of keys with the cache prefix.
+     *
+     * @param array $key
+     * @return array
+     */
+    protected function prefixKeys(array $keys)
+    {
+        return array_map(function ($key) {
+            return $this->prefix.$key;
+        }, $keys);
     }
 }
