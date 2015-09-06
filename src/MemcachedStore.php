@@ -31,8 +31,7 @@ class MemcachedStore extends IlluminateMemcachedStore implements StoreMulti
      */
     public function getMulti(array $keys)
     {
-        $preserve = defined(get_class($this->memcached).'::GET_PRESERVE_ORDER') ? constant(get_class($this->memcached).'::GET_PRESERVE_ORDER') : null;
-        $values = $this->memcached->getMulti($this->prefixKeys($keys), null, $preserve);
+        $values = $this->memcached->getMulti($this->prefixKeys($keys), null, defined(get_class($this->memcached).'::GET_PRESERVE_ORDER') ? constant(get_class($this->memcached).'::GET_PRESERVE_ORDER') : null);
 
         if ($this->memcached->getResultCode() === 0) {
             return $values;
