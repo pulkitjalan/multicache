@@ -1,6 +1,6 @@
 <?php
 
-namespace PukitJalan\Cache;
+namespace PulkitJalan\Cache;
 
 use Illuminate\Cache\CacheManager as IlluminateCacheManager;
 use Illuminate\Cache\ApcWrapper;

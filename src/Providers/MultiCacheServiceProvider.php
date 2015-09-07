@@ -2,18 +2,11 @@
 
 namespace PulkitJalan\Cache\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use PukitJalan\Cache\CacheManager;
+use Illuminate\Cache\CacheServiceProvider;
+use PulkitJalan\Cache\CacheManager;
 
-class MultiCacheServiceProvider extends ServiceProvider
+class MultiCacheServiceProvider extends CacheServiceProvider
 {
-    /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = true;
-
     /**
      * Register bindings in the container.
      *
@@ -21,6 +14,9 @@ class MultiCacheServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        parent::register();
+
+        // replace cache manager
         $this->app->singleton('cache', function ($app) {
             return new CacheManager($app);
         });
