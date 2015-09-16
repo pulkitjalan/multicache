@@ -2,6 +2,7 @@
 
 namespace PulkitJalan\Cache;
 
+use Closure;
 use Illuminate\Cache\Repository as IlluminateRepository;
 use PulkitJalan\Cache\Contracts\Repository as CacheMultiContract;
 
@@ -67,6 +68,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
         if (!method_exists($this->store, 'getMulti')) {
             return array_combine(array_keys($keys), array_map([$this, 'get'], array_keys($keys), array_values($keys)));
         }
+        var_dump('getMulti exists');
 
         $values = array_combine(array_keys($keys), $this->store->getMulti(array_keys($keys)));
 
@@ -222,7 +224,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
     public function foreverMulti(array $items)
     {
         if (!method_exists($this->store, 'foreverMulti')) {
-            array_map([$this, 'forever'], $items);
+            array_map([$this, 'forever'], array_keys($items), array_values($items));
         } else {
             $this->store->foreverMulti($items);
 
@@ -259,7 +261,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
      */
     public function rememberMulti(array $keys, $minutes, Closure $callback)
     {
-        $values = $this->getMulti(array_keys($items));
+        $values = $this->getMulti($keys);
 
         $items = array_where($values, function ($key, $value) {
             return is_null($value);
@@ -267,7 +269,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
 
         $items = array_map($callback, $items);
 
-        $this->putMulti($items, array_fill(0, count($items), $minutes));
+        $this->putMulti($items, $minutes);
 
         return array_replace($values, $items);
     }
@@ -325,7 +327,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
      */
     public function rememberForeverMulti(array $keys, Closure $callback)
     {
-        $values = $this->getMulti(array_keys($items));
+        $values = $this->getMulti($keys);
 
         $items = array_where($values, function ($key, $value) {
             return is_null($value);
@@ -362,7 +364,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
     public function forgetMulti(array $keys)
     {
         if (!method_exists($this->store, 'forgetMulti')) {
-            return array_combine(array_keys($keys), array_map([$this, 'forget'], array_keys($keys)));
+            return array_combine($keys, array_map([$this, 'forget'], $keys));
         }
 
         $success = $this->store->forgetMulti($keys);
