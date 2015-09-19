@@ -40,11 +40,11 @@ class MemcachedStore extends IlluminateMemcachedStore
      * Store an array of items in the cache indefinitely.
      *
      * @param  array  $items
-     * @return array|bool
+     * @return void
      */
     public function foreverMulti(array $items)
     {
-        return $this->putMulti($items, 0);
+        $this->putMulti($items, 0);
     }
 
     /**
@@ -63,7 +63,7 @@ class MemcachedStore extends IlluminateMemcachedStore
     /**
      * Prefix and array of keys with the cache prefix.
      *
-     * @param array $key
+     * @param array $keys
      * @return array
      */
     protected function prefixKeys(array $keys)

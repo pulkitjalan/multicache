@@ -3,6 +3,7 @@
 namespace PulkitJalan\Cache;
 
 use Illuminate\Cache\CacheManager as IlluminateCacheManager;
+use Illuminate\Support\Arr;
 
 class CacheManager extends IlluminateCacheManager
 {
@@ -29,6 +30,26 @@ class CacheManager extends IlluminateCacheManager
         $memcached = $this->app['memcached.connector']->connect($config['servers']);
 
         return $this->repository(new MemcachedStore($memcached, $prefix));
+    }
+
+    /**
+     * Create an instance of the database cache driver.
+     *
+     * @param  array  $config
+     * @return \PulkitJalan\Cache\DatabaseStore
+     */
+    protected function createDatabaseDriver(array $config)
+    {
+        $connection = $this->app['db']->connection(Arr::get($config, 'connection'));
+
+        return $this->repository(
+            new DatabaseStore(
+                $connection,
+                $this->app['encrypter'],
+                $config['table'],
+                $this->getPrefix($config)
+            )
+        );
     }
 
     /**

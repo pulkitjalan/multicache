@@ -13,6 +13,7 @@ Laravel Multicache
 ## Requirements
 
 Laravel >= 5.1
+
 PHP >= 5.5.9
 
 ## Installation
@@ -179,4 +180,4 @@ For example if we are using the `apc` driver, which does not offer its own `getM
 
 Now if we are using the `memcached` driver, which does have its own `getMulti` method, then that method will be called once and the data returned.
 
-Currently the `MemcachedStore` and the `ArrayStore` are the only ones to offer their own `Multi` methods. **More to come soon...**
+Currently the `MemcachedStore`, `DatabaseDtore` and the `ArrayStore` are the only ones to offer their own `Multi` methods. **More to come soon...**
