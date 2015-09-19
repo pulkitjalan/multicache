@@ -21,6 +21,11 @@ class DatabaseStore extends IlluminateDatabaseStore
         foreach ($keys as $key) {
             $item = $cache->get($this->prefix.$key);
 
+            if (is_null($item)) {
+                $cached[$key] = null;
+                continue;
+            }
+
             if (time() >= data_get($item, 'expiration')) {
                 $expired[] = $key;
                 $cached[$key] = null;
@@ -57,7 +62,7 @@ class DatabaseStore extends IlluminateDatabaseStore
             ];
         }
 
-        $this->forgetMulti(array_pluck($insert, 'key'));
+        $this->forgetMulti(array_keys($items));
 
         $this->table()->insert($insert);
     }
@@ -70,7 +75,7 @@ class DatabaseStore extends IlluminateDatabaseStore
      */
     public function foreverMulti(array $items)
     {
-        $this->putMulti($items, 0);
+        $this->putMulti($items, 5256000);
     }
 
     /**

@@ -11,10 +11,10 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "illuminate/cache": "~5.0"
+        "illuminate/cache": "~5.1"
     },
     "require-dev": {
-        "illuminate/filesystem": "~5.0",
+        "illuminate/filesystem": "~5.1",
         "phpunit/phpunit": "~4.0",
         "mockery/mockery": "~0.9.1"
     },

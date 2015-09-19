@@ -176,8 +176,8 @@ Cache::put(array_keys($data), array_values($data), 10);
 
 For any driver that does not have an underlying `multi` method, the methods will call the non-multi version of the method for every item in the array.
 
-For example if we are using the `apc` driver, which does not offer its own `getMulti` method, then the `get` method will be called for every item in the array.
+For example, if we are using the `apc` driver, which does not offer its own `getMulti` method, then the `get` method will be called for every item in the array.
 
 Now if we are using the `memcached` driver, which does have its own `getMulti` method, then that method will be called once and the data returned.
 
-Currently the `MemcachedStore`, `DatabaseDtore` and the `ArrayStore` are the only ones to offer their own `Multi` methods. **More to come soon...**
+Currently the `MemcachedStore`, `DatabaseStore` and the `ArrayStore` are the only ones to offer their own `Multi` methods. **More to come soon...**
