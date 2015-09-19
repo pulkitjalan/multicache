@@ -2,6 +2,7 @@
 
 use Mockery as m;
 use Carbon\Carbon;
+use PulkitJalan\Cache\Repository;
 use Illuminate\Contracts\Cache\Store;
 use PulkitJalan\Cache\Contracts\StoreMulti;
 
@@ -83,6 +84,31 @@ class CacheRepositoryTest extends PHPUnit_Framework_TestCase
         $repo->add(['foo', 'baz'], ['bar', 'boom'], 10);
     }
 
+    public function testPullMethod()
+    {
+        $repo = $this->getRepository();
+        $repo->getStore()->shouldReceive('get')->once()->andReturn('bar');
+        $repo->getStore()->shouldReceive('get')->once()->andReturn('boom');
+        $repo->getStore()->shouldReceive('forget')->once()->with('foo')->andReturn(true);
+        $repo->getStore()->shouldReceive('forget')->once()->with('baz')->andReturn(true);
+        $this->assertEquals(['foo' => 'bar', 'baz' => 'boom'], $repo->pullMulti(['foo', 'baz']));
+
+        $repo->getStore()->shouldReceive('get')->once()->andReturn('bar');
+        $repo->getStore()->shouldReceive('get')->once()->andReturn('boom');
+        $repo->getStore()->shouldReceive('forget')->once()->with('foo')->andReturn(true);
+        $repo->getStore()->shouldReceive('forget')->once()->with('baz')->andReturn(true);
+        $this->assertEquals(['foo' => 'bar', 'baz' => 'boom'], $repo->pull(['foo', 'baz']));
+
+        $repo = $this->getRepository(StoreMulti::class);
+        $repo->getStore()->shouldReceive('getMulti')->once()->andReturn(['foo' => 'bar', 'baz' => 'boom']);
+        $repo->getStore()->shouldReceive('forgetMulti')->once()->with(['foo', 'baz'])->andReturn(['foo' => true, 'baz' => true]);
+        $this->assertEquals(['foo' => 'bar', 'baz' => 'boom'], $repo->pullMulti(['foo', 'baz']));
+
+        $repo->getStore()->shouldReceive('getMulti')->once()->andReturn(['foo' => 'bar', 'baz' => 'boom']);
+        $repo->getStore()->shouldReceive('forgetMulti')->once()->with(['foo', 'baz'])->andReturn(['foo' => true, 'baz' => true]);
+        $this->assertEquals(['foo' => 'bar', 'baz' => 'boom'], $repo->pull(['foo', 'baz']));
+    }
+
     public function testForgetMethod()
     {
         $repo = $this->getRepository();
@@ -154,8 +180,34 @@ class CacheRepositoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(['foo' => 'bar', 'baz' => 'bar'], $result);
     }
 
+    public function testSearMethodCallsForeverAndReturnsDefault()
+    {
+        $repo = $this->getRepository();
+        $repo->getStore()->shouldReceive('get')->andReturn(null);
+        $repo->getStore()->shouldReceive('forever')->once()->with('foo', 'bar');
+        $repo->getStore()->shouldReceive('forever')->once()->with('baz', 'bar');
+        $result = $repo->searMulti(['foo', 'baz'], function () { return 'bar'; });
+        $this->assertEquals(['foo' => 'bar', 'baz' => 'bar'], $result);
+
+        $repo->getStore()->shouldReceive('forever')->once()->with('foo', 'bar');
+        $repo->getStore()->shouldReceive('forever')->once()->with('baz', 'bar');
+        $result = $repo->sear(['foo', 'baz'], function () { return 'bar'; });
+        $this->assertEquals(['foo' => 'bar', 'baz' => 'bar'], $result);
+
+        $repo = $this->getRepository(StoreMulti::class);
+        $repo->getStore()->shouldReceive('getMulti')->andReturn(['foo' => null, 'baz' => null]);
+        $repo->getStore()->shouldReceive('foreverMulti')->once()->with(['foo' => 'bar', 'baz' => 'bar']);
+        $result = $repo->searMulti(['foo', 'baz'], function () { return 'bar'; });
+        $this->assertEquals(['foo' => 'bar', 'baz' => 'bar'], $result);
+
+        $repo->getStore()->shouldReceive('getMulti')->andReturn(['foo' => null, 'baz' => null]);
+        $repo->getStore()->shouldReceive('foreverMulti')->once()->with(['foo' => 'bar', 'baz' => 'bar']);
+        $result = $repo->sear(['foo', 'baz'], function () { return 'bar'; });
+        $this->assertEquals(['foo' => 'bar', 'baz' => 'bar'], $result);
+    }
+
     protected function getRepository($contract = Store::class)
     {
-        return new PulkitJalan\Cache\Repository(m::mock($contract));
+        return new Repository(m::mock($contract));
     }
 }
