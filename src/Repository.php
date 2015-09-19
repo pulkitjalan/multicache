@@ -68,7 +68,6 @@ class Repository extends IlluminateRepository implements CacheMultiContract
         if (!method_exists($this->store, 'getMulti')) {
             return array_combine(array_keys($keys), array_map([$this, 'get'], array_keys($keys), array_values($keys)));
         }
-        var_dump('getMulti exists');
 
         $values = array_combine(array_keys($keys), $this->store->getMulti(array_keys($keys)));
 

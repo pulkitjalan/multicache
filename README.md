@@ -1,7 +1,29 @@
-# laravel-multicache
-(WIP) Adds array caching
+Laravel Multicache
+=========
 
-New Methods:
+> Adds array caching to Laravels cache drivers and custom drivers.
+
+## Installation
+
+Install via composer - edit your `composer.json` to require the package.
+
+```js
+"require": {
+    "pulkitjalan/laravel-multicache": "0.1.*"
+}
+```
+
+Then run `composer update` in your terminal to pull it in.
+
+Now add the following to the `providers` array in your `config/app.php`
+
+```php
+PulkitJalan\Cache\Providers\MultiCacheServiceProvider::class
+```
+
+## Usage
+
+Any existing cache drivers and custom drivers will have access to the following methods:
 
 ```php
     /**
@@ -11,6 +33,7 @@ New Methods:
      * @return array
      */
     public function hasMulti(array $keys);
+
     /**
      * Retrieve an array of items from the cache by keys.
      *
@@ -19,6 +42,7 @@ New Methods:
      * @return array
      */
     public function getMulti(array $keys, $default = null);
+
     /**
      * Retrieve an array of items from the cache and delete them.
      *
@@ -27,6 +51,7 @@ New Methods:
      * @return array
      */
     public function pullMulti(array $keys, $default = null);
+
     /**
      * Store an array of items in the cache.
      *
@@ -35,6 +60,7 @@ New Methods:
      * @return void
      */
     public function putMulti(array $items, $minutes);
+
     /**
      * Store an array of items in the cache if the key does not exist.
      *
@@ -43,6 +69,7 @@ New Methods:
      * @return bool
      */
     public function addMulti(array $items, $minutes);
+
     /**
      * Store an array of items in the cache indefinitely.
      *
@@ -50,6 +77,7 @@ New Methods:
      * @return void
      */
     public function foreverMulti(array $items);
+
     /**
      * Get an array of items from the cache, or store the default value.
      *
@@ -59,6 +87,7 @@ New Methods:
      * @return mixed
      */
     public function rememberMulti(array $keys, $minutes, Closure $callback);
+
     /**
      * Get an array of items from the cache, or store the default value forever.
      *
@@ -67,6 +96,7 @@ New Methods:
      * @return mixed
      */
     public function searMulti(array $keys, Closure $callback);
+
     /**
      * Get an array of items from the cache, or store the default value forever.
      *
@@ -75,6 +105,7 @@ New Methods:
      * @return mixed
      */
     public function rememberForeverMulti(array $keys, Closure $callback);
+
     /**
      * Remove an array of items from the cache.
      *
@@ -82,11 +113,45 @@ New Methods:
      * @return bool
      */
     public function forgetMulti(array $keys);
-  ```
+```
   
-Most of the existing methods like `has`, `get`, `put`... will also accept an array and automatically run the relevent function.
+Most of the existing methods like `has`, `get`, `put`... will also accept an array and automatically run the relevant "Multi" function.
 
-The `put` method works a little differently to `putMulti`. Where `putMulti` accepts a key value array as the first paramater and the number of minutes to store for as the second paramater, the `put` method takes 2 seperate arrays and minutes as the paramaters.
+## How does it work?
+
+For any driver that does not have an underlying `multi` method, the methods will call the non-multi version of the method for every item in the array.
+
+For example if we am using the `apc` driver, which does not offer its own `getMulti` method, then the `get` method will be called for every item in the array.
+
+Now if we are using the `memcached` driver, which does have its own `getMulti` method, then that method will be called once and the data returned.
+
+Currently the `MemcachedStore` and the `ArrayStore` are the only ones to offer their own `Multi` methods. More to come soon...
+
+## Examples
+
+Below are a few examples of how to use the functions and what they return.
+
+### Get
+
+```php
+$keys = [
+    'one', // exists
+    'two', // does not exist
+    'three', // exists
+];
+
+Cache::getMulti($keys, 'Nooo');
+
+// or
+
+Cache::get($keys, 'Nooo');
+
+// will return: ['one' => 'data', 'two' => 'Nooo', 'three' => 'data']
+```
+
+### Put
+
+The `put` method works a little differently to `putMulti`. Where `putMulti` accepts a key value array as the first parameter and the number of minutes to store for as the second parameter, the `put` method takes two separate arrays as the first two parameters and minutes as the third parameter.
 
 Eg:
 
@@ -102,5 +167,4 @@ Cache::putMulti($data, 10);
 // or
 
 Cache::put(array_keys($data), array_values($data), 10);
-
 ```
