@@ -18,7 +18,7 @@ PHP >= 5.5.9
 
 ## Installation
 
-Install via composer - edit your `composer.json` to require the package.
+Install via [composer](https://getcomposer.org/) - edit your `composer.json` to require the package.
 
 ```js
 "require": {
@@ -128,7 +128,7 @@ Any existing cache drivers and custom drivers will have access to the following 
     public function forgetMulti(array $keys);
 ```
 
-Most of the existing methods like `has`, `get`, `put`, `forget`... will also accept an array and automatically run the relevant `Multi` function. As Expected the original methods will return results in the same format as they always have.
+Most of the existing methods like `has`, `get`, `put`, `forget`... will also accept an array and automatically run the relevant `Multi` function. As Expected the original methods will return results in the same format as they always have if called without an array.
 
 ## Examples
 
@@ -216,6 +216,4 @@ For example, if we are using the `apc` driver, which does not offer its own `get
 
 Now if we are using the `memcached` driver, which does have its own `getMulti` method, then that method will be called once and the data returned.
 
-Currently the `MemcachedStore`, `DatabaseStore`, `RedisStore` and the `ArrayStore` are the only ones to offer their own `Multi` methods.
-
-**More to come soon...**
+Currently the `MemcachedStore`, `DatabaseStore`, `RedisStore` and the `ArrayStore` are the only ones to offer their own `Multi` methods. **More to come soon...**
