@@ -180,4 +180,4 @@ For example, if we are using the `apc` driver, which does not offer its own `get
 
 Now if we are using the `memcached` driver, which does have its own `getMulti` method, then that method will be called once and the data returned.
 
-Currently the `MemcachedStore`, `DatabaseStore` and the `ArrayStore` are the only ones to offer their own `Multi` methods. **More to come soon...**
+Currently the `MemcachedStore`, `DatabaseStore`, `RedisStore` and the `ArrayStore` are the only ones to offer their own `Multi` methods. **More to come soon...**

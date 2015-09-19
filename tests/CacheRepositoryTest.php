@@ -53,6 +53,12 @@ class CacheRepositoryTest extends PHPUnit_Framework_TestCase
         $repo->getStore()->shouldReceive('get')->twice()->andReturn('baz');
         $this->assertEquals(['foo' => true, 'bar' => true], $repo->has(['foo', 'bar']));
 
+        $repo->getStore()->shouldReceive('get')->once()->with('foo')->andReturn(null);
+        $repo->getStore()->shouldReceive('get')->once()->with('bar')->andReturn('bar');
+
+        $this->assertTrue($repo->has('bar'));
+        $this->assertFalse($repo->has('foo'));
+
         $repo = $this->getRepository(StoreMulti::class);
         $repo->getStore()->shouldReceive('getMulti')->once()->andReturn(['foo' => null, 'bar' => null]);
         $this->assertEquals(['foo' => false, 'bar' => false], $repo->has(['foo', 'bar']));
@@ -73,6 +79,11 @@ class CacheRepositoryTest extends PHPUnit_Framework_TestCase
         $repo->getStore()->shouldReceive('put')->once()->with('foo', 'bar', 10);
         $repo->getStore()->shouldReceive('put')->once()->with('baz', 'boom', 10);
         $repo->add(['foo', 'baz'], ['bar', 'boom'], 10);
+
+        $repo->getStore()->shouldReceive('get')->once()->with('foo')->andReturn(null);
+        $repo->getStore()->shouldReceive('put')->once()->with('foo', 'bar', 10);
+
+        $repo->add('foo', 'bar', 10);
 
         $repo = $this->getRepository(StoreMulti::class);
         $repo->getStore()->shouldReceive('getMulti')->once()->andReturn(['foo' => null, 'baz' => null]);
@@ -98,6 +109,11 @@ class CacheRepositoryTest extends PHPUnit_Framework_TestCase
         $repo->getStore()->shouldReceive('forget')->once()->with('foo')->andReturn(true);
         $repo->getStore()->shouldReceive('forget')->once()->with('baz')->andReturn(true);
         $this->assertEquals(['foo' => 'bar', 'baz' => 'boom'], $repo->pull(['foo', 'baz']));
+
+        $repo->getStore()->shouldReceive('get')->once()->with('foo')->andReturn('bar');
+        $repo->getStore()->shouldReceive('forget')->once()->with('foo')->andReturn(true);
+
+        $this->assertEquals('bar', $repo->pull('foo'));
 
         $repo = $this->getRepository(StoreMulti::class);
         $repo->getStore()->shouldReceive('getMulti')->once()->andReturn(['foo' => 'bar', 'baz' => 'boom']);
