@@ -3,6 +3,13 @@ Laravel Multicache
 
 > Adds array caching to Laravels cache drivers and custom drivers.
 
+[![Build Status](http://img.shields.io/travis/pulkitjalan/laravel-multicache.svg?style=flat-square)](https://travis-ci.org/pulkitjalan/laravel-multicache)
+[![Scrutinizer Code Quality](http://img.shields.io/scrutinizer/g/pulkitjalan/laravel-multicache/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/pulkitjalan/laravel-multicache/)
+[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/pulkitjalan/laravel-multicache/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/pulkitjalan/laravel-multicache/code-structure/master)
+[![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](http://www.opensource.org/licenses/MIT)
+[![Latest Version](http://img.shields.io/packagist/v/pulkitjalan/laravel-multicache.svg?style=flat-square)](https://packagist.org/packages/pulkitjalan/laravel-multicache)
+[![Total Downloads](https://img.shields.io/packagist/dt/pulkitjalan/laravel-multicache.svg?style=flat-square)](https://packagist.org/packages/pulkitjalan/laravel-multicache)
+
 ## Installation
 
 Install via composer - edit your `composer.json` to require the package.
@@ -117,16 +124,6 @@ Any existing cache drivers and custom drivers will have access to the following 
   
 Most of the existing methods like `has`, `get`, `put`... will also accept an array and automatically run the relevant "Multi" function.
 
-## How does it work?
-
-For any driver that does not have an underlying `multi` method, the methods will call the non-multi version of the method for every item in the array.
-
-For example if we am using the `apc` driver, which does not offer its own `getMulti` method, then the `get` method will be called for every item in the array.
-
-Now if we are using the `memcached` driver, which does have its own `getMulti` method, then that method will be called once and the data returned.
-
-Currently the `MemcachedStore` and the `ArrayStore` are the only ones to offer their own `Multi` methods. More to come soon...
-
 ## Examples
 
 Below are a few examples of how to use the functions and what they return.
@@ -168,3 +165,13 @@ Cache::putMulti($data, 10);
 
 Cache::put(array_keys($data), array_values($data), 10);
 ```
+
+## How does it work?
+
+For any driver that does not have an underlying `multi` method, the methods will call the non-multi version of the method for every item in the array.
+
+For example if we are using the `apc` driver, which does not offer its own `getMulti` method, then the `get` method will be called for every item in the array.
+
+Now if we are using the `memcached` driver, which does have its own `getMulti` method, then that method will be called once and the data returned.
+
+Currently the `MemcachedStore` and the `ArrayStore` are the only ones to offer their own `Multi` methods. **More to come soon...**
