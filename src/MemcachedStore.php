@@ -55,6 +55,10 @@ class MemcachedStore extends IlluminateMemcachedStore
      */
     public function forgetMulti(array $keys)
     {
+        if (!method_exists($this->memcached, 'deleteMulti')) {
+            return array_combine($keys, array_map([$this, 'forget'], $keys));
+        }
+
         $result = $this->memcached->deleteMulti($this->prefixKeys($keys));
 
         return array_fill_keys($keys, $result);

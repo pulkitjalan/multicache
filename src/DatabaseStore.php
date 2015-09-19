@@ -21,13 +21,10 @@ class DatabaseStore extends IlluminateDatabaseStore
         foreach ($keys as $key) {
             $item = $cache->get($this->prefix.$key);
 
-            if (is_null($item)) {
-                $cached[$key] = null;
-                continue;
-            }
-
             if (time() >= data_get($item, 'expiration')) {
-                $expired[] = $key;
+                if (!is_null($item)) {
+                    $expired[] = $key;
+                }
                 $cached[$key] = null;
                 continue;
             }

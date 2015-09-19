@@ -11,8 +11,8 @@ class Repository extends IlluminateRepository implements CacheMultiContract
     /**
      * Determine if an item exists in the cache.
      *
-     * @param  string  $key
-     * @return bool
+     * @param  mixed  $key
+     * @return mixed
      */
     public function has($key)
     {
@@ -41,7 +41,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
     /**
      * Retrieve an item from the cache by key.
      *
-     * @param  string  $key
+     * @param  mixed  $key
      * @param  mixed   $default
      * @return mixed
      */
@@ -87,7 +87,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
     /**
      * Retrieve an item from the cache and delete it.
      *
-     * @param  string  $key
+     * @param  mixed  $key
      * @param  mixed   $default
      * @return mixed
      */
@@ -119,7 +119,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
     /**
      * Store an item in the cache.
      *
-     * @param  string  $key
+     * @param  mixed  $key
      * @param  mixed   $value
      * @param  \DateTime|int  $minutes
      * @return void
@@ -160,10 +160,10 @@ class Repository extends IlluminateRepository implements CacheMultiContract
     /**
      * Store an item in the cache if the key does not exist.
      *
-     * @param  string  $key
+     * @param  mixed  $key
      * @param  mixed   $value
      * @param  \DateTime|int  $minutes
-     * @return bool
+     * @return mixed
      */
     public function add($key, $value, $minutes)
     {
@@ -201,7 +201,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
     /**
      * Store an item in the cache indefinitely.
      *
-     * @param  string  $key
+     * @param  mixed  $key
      * @param  mixed   $value
      * @return void
      */
@@ -236,7 +236,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
     /**
      * Get an item from the cache, or store the default value.
      *
-     * @param  string  $key
+     * @param  mixed  $key
      * @param  \DateTime|int  $minutes
      * @param  \Closure  $callback
      * @return mixed
