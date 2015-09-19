@@ -19,7 +19,7 @@ class DatabaseStore extends IlluminateDatabaseStore
         $cached = [];
         $expired = [];
         foreach ($keys as $key) {
-            $item = $cache->get($this->prefix.$key);
+            $item = $cache->get($this->getPrefix().$key);
 
             if (time() >= data_get($item, 'expiration')) {
                 if (!is_null($item)) {
@@ -53,7 +53,7 @@ class DatabaseStore extends IlluminateDatabaseStore
         $insert = [];
         foreach ($items as $key => $value) {
             $insert[] = [
-                'key' => $this->prefix.$key,
+                'key' => $this->getPrefix().$key,
                 'value' => $this->encrypter->encrypt($value),
                 'expiration' => $expiration,
             ];
@@ -85,7 +85,7 @@ class DatabaseStore extends IlluminateDatabaseStore
     {
         $this->table()->whereIn('key', $this->prefixKeys($keys))->delete();
 
-        return true;
+        return array_fill_keys($keys, true);
     }
 
     /**
@@ -97,7 +97,7 @@ class DatabaseStore extends IlluminateDatabaseStore
     protected function prefixKeys(array $keys)
     {
         return array_map(function ($key) {
-            return $this->prefix.$key;
+            return $this->getPrefix().$key;
         }, $keys);
     }
 }

@@ -85,7 +85,7 @@ class CacheDatabaseStoreTest extends PHPUnit_Framework_TestCase
         $table->shouldReceive('whereIn')->once()->with('key', ['prefixfoo', 'prefixbar'])->andReturn($table);
         $table->shouldReceive('delete')->once();
 
-        $store->forgetMulti(['foo', 'bar']);
+        $this->assertEquals(['foo' => true, 'bar' => true], $store->forgetMulti(['foo', 'bar']));
     }
 
     protected function getStore()

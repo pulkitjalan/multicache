@@ -33,6 +33,20 @@ class CacheManager extends IlluminateCacheManager
     }
 
     /**
+     * Create an instance of the Redis cache driver.
+     *
+     * @param  array  $config
+     * @return \Illuminate\Cache\RedisStore
+     */
+    protected function createRedisDriver(array $config)
+    {
+        $redis = $this->app['redis'];
+        $connection = Arr::get($config, 'connection', 'default') ?: 'default';
+
+        return $this->repository(new RedisStore($redis, $this->getPrefix($config), $connection));
+    }
+
+    /**
      * Create an instance of the database cache driver.
      *
      * @param  array  $config

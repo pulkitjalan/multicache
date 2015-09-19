@@ -45,8 +45,10 @@ class CacheMemcachedStoreTest extends PHPUnit_Framework_TestCase
     public function testForgetMethodProperlyCallsMemcache()
     {
         $memcache = $this->getMock('Memcached', ['deleteMulti']);
-        $memcache->expects($this->once())->method('deleteMulti')->with($this->equalTo(['foo:bar', 'foo:baz']));
+        $memcache->expects($this->once())->method('deleteMulti')->with($this->equalTo(['foo:bar', 'foo:baz']))->will($this->returnValue(true));
         $store = new MemcachedStore($memcache, 'foo');
-        $store->forgetMulti(['bar', 'baz']);
+        $values = $store->forgetMulti(['bar', 'baz']);
+        $this->assertTrue($values['bar']);
+        $this->assertTrue($values['baz']);
     }
 }

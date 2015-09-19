@@ -2,9 +2,9 @@
 
 namespace PulkitJalan\Cache;
 
-use Illuminate\Cache\MemcachedStore as IlluminateMemcachedStore;
+use Illuminate\Cache\RedisStore as IlluminateRedisStore;
 
-class MemcachedStore extends IlluminateMemcachedStore
+class RedisStore extends IlluminateRedisStore
 {
     /**
      * Retrieve an array item from the cache by key.
@@ -14,14 +14,11 @@ class MemcachedStore extends IlluminateMemcachedStore
      */
     public function getMulti(array $keys)
     {
-        $preserve = defined(get_class($this->memcached).'::GET_PRESERVE_ORDER') ? constant(get_class($this->memcached).'::GET_PRESERVE_ORDER') : null;
-        $tokens = null;
+        $values = $this->connection()->mget($this->prefixKeys($keys));
 
-        $values = $this->memcached->getMulti($this->prefixKeys($keys), $tokens, $preserve);
-
-        if ($this->memcached->getResultCode() === 0) {
-            return $values;
-        }
+        return array_combine($keys, array_map(function ($value) {
+            return is_numeric($value) ? $value : unserialize($value);
+        }, $values));
     }
 
     /**
@@ -33,7 +30,14 @@ class MemcachedStore extends IlluminateMemcachedStore
      */
     public function putMulti(array $items, $minutes)
     {
-        $this->memcached->setMulti(array_combine($this->prefixKeys(array_keys($items)), array_values($items)), $minutes * 60);
+        $minutes = max(1, $minutes);
+
+        return $this->connection()->transaction(function ($tx) use ($items, $minutes) {
+            foreach ($items as $key => $value) {
+                $value = is_numeric($value) ? $value : serialize($value);
+                $tx->setex($this->getPrefix().$key, $minutes * 60, $value);
+            }
+        });
     }
 
     /**
@@ -44,24 +48,27 @@ class MemcachedStore extends IlluminateMemcachedStore
      */
     public function foreverMulti(array $items)
     {
-        $this->putMulti($items, 0);
+        $items = array_combine(
+            $this->prefixKeys(array_keys($items)),
+            array_map(function ($value) {
+                return is_numeric($value) ? $value : serialize($value);
+            }, array_values($items))
+        );
+
+        $this->connection()->mset($items);
     }
 
     /**
      * Remove an array of items from the cache.
      *
      * @param  array  $keys
-     * @return array
+     * @return bool
      */
     public function forgetMulti(array $keys)
     {
-        if (!method_exists($this->memcached, 'deleteMulti')) {
-            return array_combine($keys, array_map([$this, 'forget'], $keys));
-        }
+        $this->connection()->del($this->prefixKeys($keys));
 
-        $result = $this->memcached->deleteMulti($this->prefixKeys($keys));
-
-        return array_fill_keys($keys, $result);
+        return array_fill_keys($keys, true);
     }
 
     /**

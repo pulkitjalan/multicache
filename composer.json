@@ -15,6 +15,7 @@
     },
     "require-dev": {
         "illuminate/filesystem": "~5.1",
+        "predis/predis": "~1.0",
         "phpunit/phpunit": "~4.0",
         "mockery/mockery": "~0.9.1"
     },
