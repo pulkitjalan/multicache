@@ -10,6 +10,11 @@ Laravel Multicache
 [![Latest Version](http://img.shields.io/packagist/v/pulkitjalan/laravel-multicache.svg?style=flat-square)](https://packagist.org/packages/pulkitjalan/laravel-multicache)
 [![Total Downloads](https://img.shields.io/packagist/dt/pulkitjalan/laravel-multicache.svg?style=flat-square)](https://packagist.org/packages/pulkitjalan/laravel-multicache)
 
+## Requirements
+
+Laravel >= 5.1
+PHP >= 5.5.9
+
 ## Installation
 
 Install via composer - edit your `composer.json` to require the package.
