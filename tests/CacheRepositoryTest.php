@@ -98,6 +98,6 @@ class CacheRepositoryTest extends PHPUnit_Framework_TestCase
 
     protected function getRepository()
     {
-        return new PulkitJalan\Cache\Repository(m::mock('Illuminate\Contracts\Cache\Store'));
+        return new PulkitJalan\Cache\Repository(m::mock('PulkitJalan\Cache\Contracts\StoreMulti'));
     }
 }

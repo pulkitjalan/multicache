@@ -3,8 +3,9 @@
 namespace PulkitJalan\Cache;
 
 use Illuminate\Cache\DatabaseStore as IlluminateDatabaseStore;
+use PulkitJalan\Cache\Contracts\StoreMulti;
 
-class DatabaseStore extends IlluminateDatabaseStore
+class DatabaseStore extends IlluminateDatabaseStore implements StoreMulti
 {
     /**
      * Retrieve an array item from the cache by key.

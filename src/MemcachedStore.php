@@ -3,8 +3,9 @@
 namespace PulkitJalan\Cache;
 
 use Illuminate\Cache\MemcachedStore as IlluminateMemcachedStore;
+use PulkitJalan\Cache\Contracts\StoreMulti;
 
-class MemcachedStore extends IlluminateMemcachedStore
+class MemcachedStore extends IlluminateMemcachedStore implements StoreMulti
 {
     /**
      * Retrieve an array item from the cache by key.

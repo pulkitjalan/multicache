@@ -3,8 +3,9 @@
 namespace PulkitJalan\Cache;
 
 use Illuminate\Cache\RedisStore as IlluminateRedisStore;
+use PulkitJalan\Cache\Contracts\StoreMulti;
 
-class RedisStore extends IlluminateRedisStore
+class RedisStore extends IlluminateRedisStore implements StoreMulti
 {
     /**
      * Retrieve an array item from the cache by key.
