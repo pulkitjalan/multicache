@@ -22,7 +22,7 @@ Install via composer - edit your `composer.json` to require the package.
 
 ```js
 "require": {
-    "pulkitjalan/laravel-multicache": "0.1.*"
+    "pulkitjalan/laravel-multicache": "0.2.*"
 }
 ```
 
@@ -36,7 +36,7 @@ PulkitJalan\Cache\Providers\MultiCacheServiceProvider::class
 
 ## Usage
 
-Any existing cache drivers and custom drivers will have access to the following methods:
+Any existing cache drivers and custom drivers will have access to the following new methods:
 
 ```php
     /**
@@ -127,12 +127,30 @@ Any existing cache drivers and custom drivers will have access to the following 
      */
     public function forgetMulti(array $keys);
 ```
-  
-Most of the existing methods like `has`, `get`, `put`... will also accept an array and automatically run the relevant "Multi" function.
+
+Most of the existing methods like `has`, `get`, `put`, `forget`... will also accept an array and automatically run the relevant `Multi` function. As Expected the original methods will return results in the same format as they always have.
 
 ## Examples
 
 Below are a few examples of how to use the functions and what they return.
+
+### Has
+
+```php
+$keys = [
+    'one', // exists
+    'two', // does not exist
+    'three', // exists
+];
+
+Cache::hasMulti($keys);
+
+// or
+
+Cache::has($keys);
+
+// will return: ['one' => true, 'two' => false, 'three' => true]
+```
 
 ### Get
 
@@ -143,13 +161,13 @@ $keys = [
     'three', // exists
 ];
 
-Cache::getMulti($keys, 'Nooo');
+Cache::getMulti($keys);
 
 // or
 
-Cache::get($keys, 'Nooo');
+Cache::get($keys);
 
-// will return: ['one' => 'data', 'two' => 'Nooo', 'three' => 'data']
+// will return: ['one' => 'data', 'two' => null, 'three' => 'data']
 ```
 
 ### Put
@@ -160,9 +178,9 @@ Eg:
 
 ```php
 $data = [
-  'key1' => 'value1',
-  'key2' => 'value2',
-  'key3' => 'value3',
+    'key1' => 'value1',
+    'key2' => 'value2',
+    'key3' => 'value3',
 ];
 
 Cache::putMulti($data, 10);
@@ -170,6 +188,24 @@ Cache::putMulti($data, 10);
 // or
 
 Cache::put(array_keys($data), array_values($data), 10);
+```
+
+### Forget
+
+```php
+$keys = [
+    'one',
+    'two',
+    'three',
+];
+
+Cache::forgetMulti($keys);
+
+// or
+
+Cache::forget($keys);
+
+// will return: ['one' => true, 'two' => true, 'three' => true]
 ```
 
 ## How does it work?
@@ -180,4 +216,6 @@ For example, if we are using the `apc` driver, which does not offer its own `get
 
 Now if we are using the `memcached` driver, which does have its own `getMulti` method, then that method will be called once and the data returned.
 
-Currently the `MemcachedStore`, `DatabaseStore`, `RedisStore` and the `ArrayStore` are the only ones to offer their own `Multi` methods. **More to come soon...**
+Currently the `MemcachedStore`, `DatabaseStore`, `RedisStore` and the `ArrayStore` are the only ones to offer their own `Multi` methods.
+
+**More to come soon...**
