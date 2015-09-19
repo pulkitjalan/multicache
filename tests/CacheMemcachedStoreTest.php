@@ -50,5 +50,13 @@ class CacheMemcachedStoreTest extends PHPUnit_Framework_TestCase
         $values = $store->forgetMulti(['bar', 'baz']);
         $this->assertTrue($values['bar']);
         $this->assertTrue($values['baz']);
+
+        $memcache = $this->getMock('Memcached', ['delete']);
+        $memcache->expects($this->exactly(2))->method('delete')->withConsecutive(
+            [$this->equalTo('foo:bar')],
+            [$this->equalTo('foo:baz')]
+        );
+        $store = new MemcachedStore($memcache, 'foo');
+        $store->forgetMulti(['bar', 'baz']);
     }
 }

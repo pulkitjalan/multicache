@@ -94,6 +94,28 @@ class CacheRepositoryTest extends PHPUnit_Framework_TestCase
         $repo->add(['foo', 'baz'], ['bar', 'boom'], 10);
     }
 
+    public function testPutMethod()
+    {
+        $repo = $this->getRepository();
+        $repo->getStore()->shouldReceive('put')->once()->with('foo', 'bar', 10);
+        $repo->getStore()->shouldReceive('put')->once()->with('baz', 'boom', 10);
+        $repo->putMulti(['foo' => 'bar', 'baz' => 'boom'], 10);
+
+        $repo->getStore()->shouldReceive('put')->once()->with('foo', 'bar', 10);
+        $repo->getStore()->shouldReceive('put')->once()->with('baz', 'boom', 10);
+        $repo->put(['foo', 'baz'], ['bar', 'boom'], 10);
+
+        $repo->getStore()->shouldReceive('put')->once()->with('foo', 'bar', 10);
+        $repo->put('foo', 'bar', 10);
+
+        $repo = $this->getRepository(StoreMulti::class);
+        $repo->getStore()->shouldReceive('putMulti')->once()->with(['foo' => 'bar', 'baz' => 'boom'], 10);
+        $repo->putMulti(['foo' => 'bar', 'baz' => 'boom'], 10);
+
+        $repo->getStore()->shouldReceive('putMulti')->once()->with(['foo' => 'bar', 'baz' => 'boom'], 10);
+        $repo->put(['foo', 'baz'], ['bar', 'boom'], 10);
+    }
+
     public function testForeverMethod()
     {
         $repo = $this->getRepository();
