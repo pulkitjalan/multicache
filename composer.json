@@ -1,8 +1,8 @@
 {
-    "name": "pulkitjalan/laravel-multicache",
+    "name": "pulkitjalan/multicache",
     "description": "Adds array caching to Laravels cache drivers and custom drivers",
-    "homepage": "https://github.com/pulkitjalan/laravel-multicache",
-    "keywords": ["laravel", "cache"],
+    "homepage": "https://github.com/pulkitjalan/multicache",
+    "keywords": ["laravel", "cache", "array"],
     "license": "MIT",
     "authors": [
         {

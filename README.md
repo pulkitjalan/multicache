@@ -1,20 +1,19 @@
-Laravel Multicache
+Multicache
 =========
 
 > Adds array caching to Laravels cache drivers and custom drivers.
 
-[![Build Status](http://img.shields.io/travis/pulkitjalan/laravel-multicache.svg?style=flat-square)](https://travis-ci.org/pulkitjalan/laravel-multicache)
-[![Scrutinizer Code Quality](http://img.shields.io/scrutinizer/g/pulkitjalan/laravel-multicache/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/pulkitjalan/laravel-multicache/)
-[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/pulkitjalan/laravel-multicache/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/pulkitjalan/laravel-multicache/code-structure/master)
+[![Build Status](http://img.shields.io/travis/pulkitjalan/multicache.svg?style=flat-square)](https://travis-ci.org/pulkitjalan/multicache)
+[![Scrutinizer Code Quality](http://img.shields.io/scrutinizer/g/pulkitjalan/multicache/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/pulkitjalan/multicache/)
+[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/pulkitjalan/multicache/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/pulkitjalan/multicache/code-structure/master)
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](http://www.opensource.org/licenses/MIT)
-[![Latest Version](http://img.shields.io/packagist/v/pulkitjalan/laravel-multicache.svg?style=flat-square)](https://packagist.org/packages/pulkitjalan/laravel-multicache)
-[![Total Downloads](https://img.shields.io/packagist/dt/pulkitjalan/laravel-multicache.svg?style=flat-square)](https://packagist.org/packages/pulkitjalan/laravel-multicache)
+[![Latest Version](http://img.shields.io/packagist/v/pulkitjalan/multicache.svg?style=flat-square)](https://packagist.org/packages/pulkitjalan/multicache)
+[![Total Downloads](https://img.shields.io/packagist/dt/pulkitjalan/multicache.svg?style=flat-square)](https://packagist.org/packages/pulkitjalan/multicache)
 
 ## Requirements
 
-Laravel >= 5.1
-
-PHP >= 5.5.9
+- PHP >= 5.5.9
+- Laravel >= 5.1
 
 ## Installation
 
@@ -22,7 +21,7 @@ Install via [composer](https://getcomposer.org/) - edit your `composer.json` to 
 
 ```js
 "require": {
-    "pulkitjalan/laravel-multicache": "0.2.*"
+    "pulkitjalan/multicache": "0.2.*"
 }
 ```
 
