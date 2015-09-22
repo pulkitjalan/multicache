@@ -266,11 +266,15 @@ class Repository extends IlluminateRepository implements CacheManyContract
             return is_null($value);
         });
 
-        $items = array_map($callback, $items);
+        if (!empty($items)) {
+            $items = array_map($callback, $items);
 
-        $this->putMany($items, $minutes);
+            $this->putMany($items, $minutes);
 
-        return array_replace($values, $items);
+            $values = array_replace($values, $items);
+        }
+
+        return $values;
     }
 
     /**
@@ -332,11 +336,15 @@ class Repository extends IlluminateRepository implements CacheManyContract
             return is_null($value);
         });
 
-        $items = array_map($callback, $items);
+        if (!empty($items)) {
+            $items = array_map($callback, $items);
 
-        $this->foreverMany($items);
+            $this->foreverMany($items);
 
-        return array_replace($values, $items);
+            $values = array_replace($values, $items);
+        }
+
+        return $values;
     }
 
     /**
