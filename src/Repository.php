@@ -267,7 +267,7 @@ class Repository extends IlluminateRepository implements CacheManyContract
         });
 
         if (!empty($items)) {
-            $items = array_map($callback, $items);
+            $items = array_combine(array_keys($items), $callback(array_keys($items)));
 
             $this->putMany($items, $minutes);
 
@@ -337,7 +337,7 @@ class Repository extends IlluminateRepository implements CacheManyContract
         });
 
         if (!empty($items)) {
-            $items = array_map($callback, $items);
+            $items = array_combine(array_keys($items), $callback(array_keys($items)));
 
             $this->foreverMany($items);
 

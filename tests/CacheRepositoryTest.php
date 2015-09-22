@@ -191,33 +191,33 @@ class CacheRepositoryTest extends PHPUnit_Framework_TestCase
         $repo->getStore()->shouldReceive('get')->andReturn(null);
         $repo->getStore()->shouldReceive('put')->once()->with('foo', 'bar', 10);
         $repo->getStore()->shouldReceive('put')->once()->with('baz', 'bar', 10);
-        $result = $repo->rememberMany(['foo', 'baz'], 10, function () { return 'bar'; });
+        $result = $repo->rememberMany(['foo', 'baz'], 10, function () { return ['bar', 'bar']; });
         $this->assertEquals(['foo' => 'bar', 'baz' => 'bar'], $result);
 
         $repo->getStore()->shouldReceive('put')->once()->with('foo', 'bar', 10);
         $repo->getStore()->shouldReceive('put')->once()->with('baz', 'bar', 10);
-        $result = $repo->remember(['foo', 'baz'], 10, function () { return 'bar'; });
+        $result = $repo->remember(['foo', 'baz'], 10, function () { return ['bar', 'bar']; });
         $this->assertEquals(['foo' => 'bar', 'baz' => 'bar'], $result);
 
         $repo->getStore()->shouldReceive('put')->once()->with('foo', 'bar', 10);
-        $this->assertEquals('bar', $repo->remember('foo', 10, function () { return 'bar'; }));
+        $this->assertEquals('bar', $repo->remember('foo', 10, function () { return ['bar', 'bar']; }));
 
         $repo = $this->getRepository();
         $repo->getStore()->shouldReceive('get')->once()->with('foo')->andReturn('bar');
         $repo->getStore()->shouldReceive('get')->once()->with('baz')->andReturn('boom');
         $repo->getStore()->shouldNotReceive('put');
-        $result = $repo->rememberMany(['foo', 'baz'], 10, function () { return 'bar'; });
+        $result = $repo->rememberMany(['foo', 'baz'], 10, function () { return ['bar', 'bar']; });
         $this->assertEquals(['foo' => 'bar', 'baz' => 'boom'], $result);
 
         $repo = $this->getRepository(StoreMany::class);
         $repo->getStore()->shouldReceive('getMany')->andReturn(['foo' => null, 'baz' => null]);
         $repo->getStore()->shouldReceive('putMany')->once()->with(['foo' => 'bar', 'baz' => 'bar'], 10);
-        $result = $repo->rememberMany(['foo', 'baz'], 10, function () { return 'bar'; });
+        $result = $repo->rememberMany(['foo', 'baz'], 10, function () { return ['bar', 'bar']; });
         $this->assertEquals(['foo' => 'bar', 'baz' => 'bar'], $result);
 
         $repo->getStore()->shouldReceive('getMany')->andReturn(['foo' => null, 'baz' => null]);
         $repo->getStore()->shouldReceive('putMany')->once()->with(['foo' => 'bar', 'baz' => 'bar'], 10);
-        $result = $repo->remember(['foo', 'baz'], 10, function () { return 'bar'; });
+        $result = $repo->remember(['foo', 'baz'], 10, function () { return ['bar', 'bar']; });
         $this->assertEquals(['foo' => 'bar', 'baz' => 'bar'], $result);
     }
 
@@ -227,33 +227,33 @@ class CacheRepositoryTest extends PHPUnit_Framework_TestCase
         $repo->getStore()->shouldReceive('get')->andReturn(null);
         $repo->getStore()->shouldReceive('forever')->once()->with('foo', 'bar');
         $repo->getStore()->shouldReceive('forever')->once()->with('baz', 'bar');
-        $result = $repo->rememberManyForever(['foo', 'baz'], function () { return 'bar'; });
+        $result = $repo->rememberManyForever(['foo', 'baz'], function () { return ['bar', 'bar']; });
         $this->assertEquals(['foo' => 'bar', 'baz' => 'bar'], $result);
 
         $repo->getStore()->shouldReceive('forever')->once()->with('foo', 'bar');
         $repo->getStore()->shouldReceive('forever')->once()->with('baz', 'bar');
-        $result = $repo->rememberForever(['foo', 'baz'], function () { return 'bar'; });
+        $result = $repo->rememberForever(['foo', 'baz'], function () { return ['bar', 'bar']; });
         $this->assertEquals(['foo' => 'bar', 'baz' => 'bar'], $result);
 
         $repo->getStore()->shouldReceive('forever')->once()->with('foo', 'bar');
-        $this->assertEquals('bar', $repo->rememberForever('foo', function () { return 'bar'; }));
+        $this->assertEquals('bar', $repo->rememberForever('foo', function () { return ['bar', 'bar']; }));
 
         $repo = $this->getRepository();
         $repo->getStore()->shouldReceive('get')->once()->with('foo')->andReturn('bar');
         $repo->getStore()->shouldReceive('get')->once()->with('baz')->andReturn('boom');
         $repo->getStore()->shouldNotReceive('forever');
-        $result = $repo->rememberManyForever(['foo', 'baz'], function () { return 'bar'; });
+        $result = $repo->rememberManyForever(['foo', 'baz'], function () { return ['bar', 'bar']; });
         $this->assertEquals(['foo' => 'bar', 'baz' => 'boom'], $result);
 
         $repo = $this->getRepository(StoreMany::class);
         $repo->getStore()->shouldReceive('getMany')->andReturn(['foo' => null, 'baz' => null]);
         $repo->getStore()->shouldReceive('foreverMany')->once()->with(['foo' => 'bar', 'baz' => 'bar']);
-        $result = $repo->rememberManyForever(['foo', 'baz'], function () { return 'bar'; });
+        $result = $repo->rememberManyForever(['foo', 'baz'], function () { return ['bar', 'bar']; });
         $this->assertEquals(['foo' => 'bar', 'baz' => 'bar'], $result);
 
         $repo->getStore()->shouldReceive('getMany')->andReturn(['foo' => null, 'baz' => null]);
         $repo->getStore()->shouldReceive('foreverMany')->once()->with(['foo' => 'bar', 'baz' => 'bar']);
-        $result = $repo->rememberForever(['foo', 'baz'], function () { return 'bar'; });
+        $result = $repo->rememberForever(['foo', 'baz'], function () { return ['bar', 'bar']; });
         $this->assertEquals(['foo' => 'bar', 'baz' => 'bar'], $result);
     }
 
@@ -263,33 +263,33 @@ class CacheRepositoryTest extends PHPUnit_Framework_TestCase
         $repo->getStore()->shouldReceive('get')->andReturn(null);
         $repo->getStore()->shouldReceive('forever')->once()->with('foo', 'bar');
         $repo->getStore()->shouldReceive('forever')->once()->with('baz', 'bar');
-        $result = $repo->searMany(['foo', 'baz'], function () { return 'bar'; });
+        $result = $repo->searMany(['foo', 'baz'], function () { return ['bar', 'bar']; });
         $this->assertEquals(['foo' => 'bar', 'baz' => 'bar'], $result);
 
         $repo->getStore()->shouldReceive('forever')->once()->with('foo', 'bar');
         $repo->getStore()->shouldReceive('forever')->once()->with('baz', 'bar');
-        $result = $repo->sear(['foo', 'baz'], function () { return 'bar'; });
+        $result = $repo->sear(['foo', 'baz'], function () { return ['bar', 'bar']; });
         $this->assertEquals(['foo' => 'bar', 'baz' => 'bar'], $result);
 
         $repo->getStore()->shouldReceive('forever')->once()->with('foo', 'bar');
-        $this->assertEquals('bar', $repo->sear('foo', function () { return 'bar'; }));
+        $this->assertEquals('bar', $repo->sear('foo', function () { return ['bar', 'bar']; }));
 
         $repo = $this->getRepository();
         $repo->getStore()->shouldReceive('get')->once()->with('foo')->andReturn('bar');
         $repo->getStore()->shouldReceive('get')->once()->with('baz')->andReturn('boom');
         $repo->getStore()->shouldNotReceive('forever');
-        $result = $repo->sear(['foo', 'baz'], function () { return 'bar'; });
+        $result = $repo->sear(['foo', 'baz'], function () { return ['bar', 'bar']; });
         $this->assertEquals(['foo' => 'bar', 'baz' => 'boom'], $result);
 
         $repo = $this->getRepository(StoreMany::class);
         $repo->getStore()->shouldReceive('getMany')->andReturn(['foo' => null, 'baz' => null]);
         $repo->getStore()->shouldReceive('foreverMany')->once()->with(['foo' => 'bar', 'baz' => 'bar']);
-        $result = $repo->searMany(['foo', 'baz'], function () { return 'bar'; });
+        $result = $repo->searMany(['foo', 'baz'], function () { return ['bar', 'bar']; });
         $this->assertEquals(['foo' => 'bar', 'baz' => 'bar'], $result);
 
         $repo->getStore()->shouldReceive('getMany')->andReturn(['foo' => null, 'baz' => null]);
         $repo->getStore()->shouldReceive('foreverMany')->once()->with(['foo' => 'bar', 'baz' => 'bar']);
-        $result = $repo->sear(['foo', 'baz'], function () { return 'bar'; });
+        $result = $repo->sear(['foo', 'baz'], function () { return ['bar', 'bar']; });
         $this->assertEquals(['foo' => 'bar', 'baz' => 'bar'], $result);
     }
 
