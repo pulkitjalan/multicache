@@ -3,6 +3,7 @@
 namespace PulkitJalan\Cache;
 
 use Illuminate\Cache\CacheManager as IlluminateCacheManager;
+use Illuminate\Contracts\Cache\Store;
 use Illuminate\Support\Arr;
 
 class CacheManager extends IlluminateCacheManager
