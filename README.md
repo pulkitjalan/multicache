@@ -30,7 +30,7 @@ Then run `composer update` in your terminal to pull it in.
 Now add the following to the `providers` array in your `config/app.php`
 
 ```php
-PulkitJalan\Cache\Providers\LaravelServiceProvider::class
+PulkitJalan\Cache\Providers\MultiCacheServiceProvider::class
 ```
 
 ## Usage
