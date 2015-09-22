@@ -1,4 +1,4 @@
-Manycache
+Multicache
 =========
 
 > Adds array caching to Laravels cache drivers and custom drivers.
@@ -21,7 +21,7 @@ Install via [composer](https://getcomposer.org/) - edit your `composer.json` to 
 
 ```js
 "require": {
-    "pulkitjalan/multicache": "0.2.*"
+    "pulkitjalan/multicache": "0.3.*"
 }
 ```
 
