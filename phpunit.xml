@@ -18,8 +18,8 @@
         <whitelist>
             <directory suffix=".php">src/</directory>
             <exclude>
-                <file>src/MulticacheServiceProvider.php</file>
-                <directory suffix=".php">src/Facades/</directory>
+                <file>src/Providers/LaravelServiceProvider.php</file>
+                <file>src/CacheManager.php</file>
             </exclude>
         </whitelist>
     </filter>

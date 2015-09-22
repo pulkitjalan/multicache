@@ -4,7 +4,7 @@ namespace PulkitJalan\Cache\Contracts;
 
 use Illuminate\Contracts\Cache\Store;
 
-interface StoreMulti extends Store
+interface StoreMany extends Store
 {
     /**
      * Retrieve an array item from the cache by key.
@@ -12,7 +12,7 @@ interface StoreMulti extends Store
      * @param  array  $keys
      * @return array
      */
-    public function getMulti(array $keys);
+    public function getMany(array $keys);
 
     /**
      * Store an array of items in the cache for a given number of minutes.
@@ -21,7 +21,7 @@ interface StoreMulti extends Store
      * @param  int    $minutes
      * @return void
      */
-    public function putMulti(array $items, $minutes);
+    public function putMany(array $items, $minutes);
 
     /**
      * Store an array of items in the cache indefinitely.
@@ -29,7 +29,7 @@ interface StoreMulti extends Store
      * @param  array  $items
      * @return void
      */
-    public function foreverMulti(array $items);
+    public function foreverMany(array $items);
 
     /**
      * Remove an array of items from the cache.
@@ -37,5 +37,5 @@ interface StoreMulti extends Store
      * @param  array  $keys
      * @return array
      */
-    public function forgetMulti(array $keys);
+    public function forgetMany(array $keys);
 }

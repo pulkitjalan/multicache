@@ -3,9 +3,9 @@
 namespace PulkitJalan\Cache;
 
 use Illuminate\Cache\RedisStore as IlluminateRedisStore;
-use PulkitJalan\Cache\Contracts\StoreMulti;
+use PulkitJalan\Cache\Contracts\StoreMany;
 
-class RedisStore extends IlluminateRedisStore implements StoreMulti
+class RedisStore extends IlluminateRedisStore implements StoreMany
 {
     /**
      * Retrieve an array item from the cache by key.
@@ -13,7 +13,7 @@ class RedisStore extends IlluminateRedisStore implements StoreMulti
      * @param  array  $keys
      * @return array
      */
-    public function getMulti(array $keys)
+    public function getMany(array $keys)
     {
         $values = $this->connection()->mget($this->prefixKeys($keys));
 
@@ -29,7 +29,7 @@ class RedisStore extends IlluminateRedisStore implements StoreMulti
      * @param  int    $minutes
      * @return void
      */
-    public function putMulti(array $items, $minutes)
+    public function putMany(array $items, $minutes)
     {
         $minutes = max(1, $minutes);
 
@@ -47,7 +47,7 @@ class RedisStore extends IlluminateRedisStore implements StoreMulti
      * @param  array  $items
      * @return void
      */
-    public function foreverMulti(array $items)
+    public function foreverMany(array $items)
     {
         $items = array_combine(
             $this->prefixKeys(array_keys($items)),
@@ -65,7 +65,7 @@ class RedisStore extends IlluminateRedisStore implements StoreMulti
      * @param  array  $keys
      * @return bool
      */
-    public function forgetMulti(array $keys)
+    public function forgetMany(array $keys)
     {
         $this->connection()->del($this->prefixKeys($keys));
 

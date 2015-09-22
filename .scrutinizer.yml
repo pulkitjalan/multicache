@@ -1,5 +1,5 @@
 filter:
-    excluded_paths: [tests/*, src/Providers/*, src/CacheManager.php]
+    excluded_paths: [tests/*]
 checks:
     php:
         code_rating: true

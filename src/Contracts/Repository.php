@@ -13,7 +13,7 @@ interface Repository extends IlluminateRepository
      * @param  array  $keys
      * @return array
      */
-    public function hasMulti(array $keys);
+    public function hasMany(array $keys);
 
     /**
      * Retrieve an array of items from the cache by keys.
@@ -22,7 +22,7 @@ interface Repository extends IlluminateRepository
      * @param  mixed  $default
      * @return array
      */
-    public function getMulti(array $keys, $default = null);
+    public function getMany(array $keys, $default = null);
 
     /**
      * Retrieve an array of items from the cache and delete them.
@@ -31,7 +31,7 @@ interface Repository extends IlluminateRepository
      * @param  mixed  $default
      * @return array
      */
-    public function pullMulti(array $keys, $default = null);
+    public function pullMany(array $keys, $default = null);
 
     /**
      * Store an array of items in the cache.
@@ -40,7 +40,7 @@ interface Repository extends IlluminateRepository
      * @param  \DateTime|int  $minutes
      * @return void
      */
-    public function putMulti(array $items, $minutes);
+    public function putMany(array $items, $minutes);
 
     /**
      * Store an array of items in the cache if the key does not exist.
@@ -49,7 +49,7 @@ interface Repository extends IlluminateRepository
      * @param  \DateTime|int  $minutes
      * @return bool
      */
-    public function addMulti(array $items, $minutes);
+    public function addMany(array $items, $minutes);
 
     /**
      * Store an array of items in the cache indefinitely.
@@ -57,7 +57,7 @@ interface Repository extends IlluminateRepository
      * @param  array  $items
      * @return void
      */
-    public function foreverMulti(array $items);
+    public function foreverMany(array $items);
 
     /**
      * Get an array of items from the cache, or store the default value.
@@ -67,7 +67,7 @@ interface Repository extends IlluminateRepository
      * @param  \Closure  $callback
      * @return mixed
      */
-    public function rememberMulti(array $keys, $minutes, Closure $callback);
+    public function rememberMany(array $keys, $minutes, Closure $callback);
 
     /**
      * Get an array of items from the cache, or store the default value forever.
@@ -76,7 +76,7 @@ interface Repository extends IlluminateRepository
      * @param  \Closure  $callback
      * @return mixed
      */
-    public function searMulti(array $keys, Closure $callback);
+    public function searMany(array $keys, Closure $callback);
 
     /**
      * Get an array of items from the cache, or store the default value forever.
@@ -85,7 +85,7 @@ interface Repository extends IlluminateRepository
      * @param  \Closure  $callback
      * @return mixed
      */
-    public function rememberForeverMulti(array $keys, Closure $callback);
+    public function rememberManyForever(array $keys, Closure $callback);
 
     /**
      * Remove an array of items from the cache.
@@ -93,5 +93,5 @@ interface Repository extends IlluminateRepository
      * @param  array  $keys
      * @return bool
      */
-    public function forgetMulti(array $keys);
+    public function forgetMany(array $keys);
 }

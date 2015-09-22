@@ -3,9 +3,9 @@
 namespace PulkitJalan\Cache;
 
 use Illuminate\Cache\ArrayStore as IlluminateArrayStore;
-use PulkitJalan\Cache\Contracts\StoreMulti;
+use PulkitJalan\Cache\Contracts\StoreMany;
 
-class ArrayStore extends IlluminateArrayStore implements StoreMulti
+class ArrayStore extends IlluminateArrayStore implements StoreMany
 {
     /**
      * Retrieve an array item from the cache by key.
@@ -13,7 +13,7 @@ class ArrayStore extends IlluminateArrayStore implements StoreMulti
      * @param  array  $keys
      * @return array
      */
-    public function getMulti(array $keys)
+    public function getMany(array $keys)
     {
         return array_merge(array_fill_keys($keys, null), array_only($this->storage, $this->prefixKeys($keys)));
     }
@@ -25,7 +25,7 @@ class ArrayStore extends IlluminateArrayStore implements StoreMulti
      * @param  int    $minutes
      * @return void
      */
-    public function putMulti(array $items, $minutes)
+    public function putMany(array $items, $minutes)
     {
         $items = array_combine($this->prefixKeys(array_keys($items)), array_values($items));
 
@@ -38,9 +38,9 @@ class ArrayStore extends IlluminateArrayStore implements StoreMulti
      * @param  array  $items
      * @return void
      */
-    public function foreverMulti(array $items)
+    public function foreverMany(array $items)
     {
-        $this->putMulti($items, 0);
+        $this->putMany($items, 0);
     }
 
     /**
@@ -49,7 +49,7 @@ class ArrayStore extends IlluminateArrayStore implements StoreMulti
      * @param  array  $keys
      * @return array
      */
-    public function forgetMulti(array $keys)
+    public function forgetMany(array $keys)
     {
         array_forget($this->storage, $this->prefixKeys($keys));
 

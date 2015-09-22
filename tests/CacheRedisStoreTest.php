@@ -15,7 +15,7 @@ class CacheRedisStoreTest extends PHPUnit_Framework_TestCase
         $redis = $this->getRedis();
         $redis->getRedis()->shouldReceive('connection')->once()->with('default')->andReturn($redis->getRedis());
         $redis->getRedis()->shouldReceive('mget')->once()->with(['prefix:foo', 'prefix:bar'])->andReturn([null, null]);
-        $this->assertEquals(['foo' => null, 'bar' => null], $redis->getMulti(['foo', 'bar']));
+        $this->assertEquals(['foo' => null, 'bar' => null], $redis->getMany(['foo', 'bar']));
     }
 
     public function testRedisValueIsReturned()
@@ -23,7 +23,7 @@ class CacheRedisStoreTest extends PHPUnit_Framework_TestCase
         $redis = $this->getRedis();
         $redis->getRedis()->shouldReceive('connection')->once()->with('default')->andReturn($redis->getRedis());
         $redis->getRedis()->shouldReceive('mget')->once()->with(['prefix:foo', 'prefix:baz'])->andReturn([serialize('bar'), serialize('boom')]);
-        $this->assertEquals(['foo' => 'bar', 'baz' => 'boom'], $redis->getMulti(['foo', 'baz']));
+        $this->assertEquals(['foo' => 'bar', 'baz' => 'boom'], $redis->getMany(['foo', 'baz']));
     }
 
     public function testRedisValueIsReturnedForNumerics()
@@ -31,7 +31,7 @@ class CacheRedisStoreTest extends PHPUnit_Framework_TestCase
         $redis = $this->getRedis();
         $redis->getRedis()->shouldReceive('connection')->once()->with('default')->andReturn($redis->getRedis());
         $redis->getRedis()->shouldReceive('mget')->once()->with(['prefix:foo', 'prefix:bar'])->andReturn([1, 2]);
-        $this->assertEquals(['foo' => 1, 'bar' => 2], $redis->getMulti(['foo', 'bar']));
+        $this->assertEquals(['foo' => 1, 'bar' => 2], $redis->getMany(['foo', 'bar']));
     }
 
     public function testSetMethodProperlyCallsRedis()
@@ -39,7 +39,7 @@ class CacheRedisStoreTest extends PHPUnit_Framework_TestCase
         $redis = $this->getRedis();
         $redis->getRedis()->shouldReceive('connection')->once()->with('default')->andReturn($redis->getRedis());
         $redis->getRedis()->shouldReceive('transaction')->once();
-        $redis->putMulti(['foo' => 'bar', 'baz' => 'boom'], 60);
+        $redis->putMany(['foo' => 'bar', 'baz' => 'boom'], 60);
     }
 
     public function testStoreItemForeverProperlyCallsRedis()
@@ -50,7 +50,7 @@ class CacheRedisStoreTest extends PHPUnit_Framework_TestCase
             'prefix:foo' => serialize('bar'),
             'prefix:baz' => serialize('boom'),
         ]);
-        $redis->foreverMulti(['foo' => 'bar', 'baz' => 'boom'], 60);
+        $redis->foreverMany(['foo' => 'bar', 'baz' => 'boom'], 60);
     }
 
     public function testForgetMethodProperlyCallsRedis()
@@ -58,7 +58,7 @@ class CacheRedisStoreTest extends PHPUnit_Framework_TestCase
         $redis = $this->getRedis();
         $redis->getRedis()->shouldReceive('connection')->once()->with('default')->andReturn($redis->getRedis());
         $redis->getRedis()->shouldReceive('del')->once()->with(['prefix:foo', 'prefix:bar']);
-        $this->assertEquals(['foo' => true, 'bar' => true], $redis->forgetMulti(['foo', 'bar']));
+        $this->assertEquals(['foo' => true, 'bar' => true], $redis->forgetMany(['foo', 'bar']));
     }
 
     protected function getRedis()

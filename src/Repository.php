@@ -4,9 +4,9 @@ namespace PulkitJalan\Cache;
 
 use Closure;
 use Illuminate\Cache\Repository as IlluminateRepository;
-use PulkitJalan\Cache\Contracts\Repository as CacheMultiContract;
+use PulkitJalan\Cache\Contracts\Repository as CacheManyContract;
 
-class Repository extends IlluminateRepository implements CacheMultiContract
+class Repository extends IlluminateRepository implements CacheManyContract
 {
     /**
      * Determine if an item exists in the cache.
@@ -17,7 +17,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
     public function has($key)
     {
         if (is_array($key)) {
-            return $this->hasMulti($key);
+            return $this->hasMany($key);
         }
 
         return parent::has($key);
@@ -29,12 +29,12 @@ class Repository extends IlluminateRepository implements CacheMultiContract
      * @param  array  $keys
      * @return array
      */
-    public function hasMulti(array $keys)
+    public function hasMany(array $keys)
     {
-        $values = $this->getMulti($keys);
+        $values = $this->getMany($keys);
 
         return array_map(function ($value) {
-            return ! is_null($value);
+            return !is_null($value);
         }, $values);
     }
 
@@ -48,7 +48,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
     public function get($key, $default = null)
     {
         if (is_array($key)) {
-            return $this->getMulti($key, $default);
+            return $this->getMany($key, $default);
         }
 
         return parent::get($key, $default);
@@ -61,15 +61,15 @@ class Repository extends IlluminateRepository implements CacheMultiContract
      * @param  mixed  $default
      * @return array
      */
-    public function getMulti(array $keys, $default = null)
+    public function getMany(array $keys, $default = null)
     {
         $keys = array_fill_keys($keys, $default);
 
-        if (!method_exists($this->store, 'getMulti')) {
+        if (!method_exists($this->store, 'getMany')) {
             return array_combine(array_keys($keys), array_map([$this, 'get'], array_keys($keys), array_values($keys)));
         }
 
-        $values = array_combine(array_keys($keys), $this->store->getMulti(array_keys($keys)));
+        $values = array_combine(array_keys($keys), $this->store->getMany(array_keys($keys)));
 
         foreach ($values as $key => &$value) {
             if (is_null($value)) {
@@ -94,7 +94,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
     public function pull($key, $default = null)
     {
         if (is_array($key)) {
-            return $this->pullMulti($key, $default);
+            return $this->pullMany($key, $default);
         }
 
         return parent::pull($key, $default);
@@ -107,11 +107,11 @@ class Repository extends IlluminateRepository implements CacheMultiContract
      * @param  mixed  $default
      * @return array
      */
-    public function pullMulti(array $keys, $default = null)
+    public function pullMany(array $keys, $default = null)
     {
-        $values = $this->getMulti($keys, $default);
+        $values = $this->getMany($keys, $default);
 
-        $this->forgetMulti($keys);
+        $this->forgetMany($keys);
 
         return $values;
     }
@@ -127,7 +127,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
     public function put($key, $value, $minutes)
     {
         if (is_array($key) && is_array($value)) {
-            $this->putMulti(array_combine($key, $value), $minutes);
+            $this->putMany(array_combine($key, $value), $minutes);
         } else {
             parent::put($key, $value, $minutes);
         }
@@ -140,15 +140,15 @@ class Repository extends IlluminateRepository implements CacheMultiContract
      * @param  \DateTime|int  $minutes
      * @return void
      */
-    public function putMulti(array $items, $minutes)
+    public function putMany(array $items, $minutes)
     {
-        if (!method_exists($this->store, 'putMulti')) {
+        if (!method_exists($this->store, 'putMany')) {
             array_map([$this, 'put'], array_keys($items), array_values($items), array_fill(0, count($items), $minutes));
         } else {
             $minutes = $this->getMinutes($minutes);
 
-            if (! is_null($minutes)) {
-                $this->store->putMulti($items, $minutes);
+            if (!is_null($minutes)) {
+                $this->store->putMany($items, $minutes);
 
                 foreach ($items as $key => $value) {
                     $this->fireCacheEvent('write', [$key, $value, $minutes]);
@@ -168,7 +168,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
     public function add($key, $value, $minutes)
     {
         if (is_array($key) && is_array($value)) {
-            return $this->addMulti(array_combine($key, $value), $minutes);
+            return $this->addMany(array_combine($key, $value), $minutes);
         }
 
         return parent::add($key, $value, $minutes);
@@ -181,9 +181,9 @@ class Repository extends IlluminateRepository implements CacheMultiContract
      * @param  \DateTime|int  $minutes
      * @return array
      */
-    public function addMulti(array $items, $minutes)
+    public function addMany(array $items, $minutes)
     {
-        $values = $this->hasMulti(array_keys($items));
+        $values = $this->hasMany(array_keys($items));
 
         $fill = array_where($values, function ($key, $value) {
             return !$value;
@@ -191,7 +191,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
 
         $fill = array_intersect_key($items, $fill);
 
-        $this->putMulti($fill, $minutes);
+        $this->putMany($fill, $minutes);
 
         return array_map(function ($value) {
             return !$value;
@@ -208,7 +208,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
     public function forever($key, $value)
     {
         if (is_array($key) && is_array($value)) {
-            $this->foreverMulti(array_combine($key, $value));
+            $this->foreverMany(array_combine($key, $value));
         } else {
             parent::forever($key, $value);
         }
@@ -220,12 +220,12 @@ class Repository extends IlluminateRepository implements CacheMultiContract
      * @param  array  $items
      * @return void
      */
-    public function foreverMulti(array $items)
+    public function foreverMany(array $items)
     {
-        if (!method_exists($this->store, 'foreverMulti')) {
+        if (!method_exists($this->store, 'foreverMany')) {
             array_map([$this, 'forever'], array_keys($items), array_values($items));
         } else {
-            $this->store->foreverMulti($items);
+            $this->store->foreverMany($items);
 
             foreach ($items as $key => $value) {
                 $this->fireCacheEvent('write', [$key, $value, 0]);
@@ -244,7 +244,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
     public function remember($key, $minutes, Closure $callback)
     {
         if (is_array($key)) {
-            return $this->rememberMulti($key, $minutes, $callback);
+            return $this->rememberMany($key, $minutes, $callback);
         }
 
         return parent::remember($key, $minutes, $callback);
@@ -258,9 +258,9 @@ class Repository extends IlluminateRepository implements CacheMultiContract
      * @param  \Closure  $callback
      * @return mixed
      */
-    public function rememberMulti(array $keys, $minutes, Closure $callback)
+    public function rememberMany(array $keys, $minutes, Closure $callback)
     {
-        $values = $this->getMulti($keys);
+        $values = $this->getMany($keys);
 
         $items = array_where($values, function ($key, $value) {
             return is_null($value);
@@ -268,7 +268,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
 
         $items = array_map($callback, $items);
 
-        $this->putMulti($items, $minutes);
+        $this->putMany($items, $minutes);
 
         return array_replace($values, $items);
     }
@@ -283,7 +283,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
     public function sear($key, Closure $callback)
     {
         if (is_array($key)) {
-            return $this->searMulti($key, $callback);
+            return $this->searMany($key, $callback);
         }
 
         return parent::sear($key, $callback);
@@ -296,9 +296,9 @@ class Repository extends IlluminateRepository implements CacheMultiContract
      * @param  \Closure  $callback
      * @return mixed
      */
-    public function searMulti(array $keys, Closure $callback)
+    public function searMany(array $keys, Closure $callback)
     {
-        return $this->rememberForeverMulti($keys, $callback);
+        return $this->rememberManyForever($keys, $callback);
     }
 
     /**
@@ -311,7 +311,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
     public function rememberForever($key, Closure $callback)
     {
         if (is_array($key)) {
-            return $this->rememberForeverMulti($key, $callback);
+            return $this->rememberManyForever($key, $callback);
         }
 
         return parent::rememberForever($key, $callback);
@@ -324,9 +324,9 @@ class Repository extends IlluminateRepository implements CacheMultiContract
      * @param  \Closure  $callback
      * @return mixed
      */
-    public function rememberForeverMulti(array $keys, Closure $callback)
+    public function rememberManyForever(array $keys, Closure $callback)
     {
-        $values = $this->getMulti($keys);
+        $values = $this->getMany($keys);
 
         $items = array_where($values, function ($key, $value) {
             return is_null($value);
@@ -334,7 +334,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
 
         $items = array_map($callback, $items);
 
-        $this->foreverMulti($items);
+        $this->foreverMany($items);
 
         return array_replace($values, $items);
     }
@@ -348,7 +348,7 @@ class Repository extends IlluminateRepository implements CacheMultiContract
     public function forget($key)
     {
         if (is_array($key)) {
-            return $this->forgetMulti($key);
+            return $this->forgetMany($key);
         }
 
         return parent::forget($key);
@@ -360,13 +360,13 @@ class Repository extends IlluminateRepository implements CacheMultiContract
      * @param  array  $keys
      * @return bool
      */
-    public function forgetMulti(array $keys)
+    public function forgetMany(array $keys)
     {
-        if (!method_exists($this->store, 'forgetMulti')) {
+        if (!method_exists($this->store, 'forgetMany')) {
             return array_combine($keys, array_map([$this, 'forget'], $keys));
         }
 
-        $success = $this->store->forgetMulti($keys);
+        $success = $this->store->forgetMany($keys);
 
         foreach ($success as $key => $value) {
             $this->fireCacheEvent('delete', [$key]);

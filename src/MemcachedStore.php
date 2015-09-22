@@ -3,9 +3,9 @@
 namespace PulkitJalan\Cache;
 
 use Illuminate\Cache\MemcachedStore as IlluminateMemcachedStore;
-use PulkitJalan\Cache\Contracts\StoreMulti;
+use PulkitJalan\Cache\Contracts\StoreMany;
 
-class MemcachedStore extends IlluminateMemcachedStore implements StoreMulti
+class MemcachedStore extends IlluminateMemcachedStore implements StoreMany
 {
     /**
      * Retrieve an array item from the cache by key.
@@ -13,7 +13,7 @@ class MemcachedStore extends IlluminateMemcachedStore implements StoreMulti
      * @param  array  $keys
      * @return array
      */
-    public function getMulti(array $keys)
+    public function getMany(array $keys)
     {
         $preserve = defined(get_class($this->memcached).'::GET_PRESERVE_ORDER') ? constant(get_class($this->memcached).'::GET_PRESERVE_ORDER') : null;
         $tokens = null;
@@ -32,7 +32,7 @@ class MemcachedStore extends IlluminateMemcachedStore implements StoreMulti
      * @param  int    $minutes
      * @return void
      */
-    public function putMulti(array $items, $minutes)
+    public function putMany(array $items, $minutes)
     {
         $this->memcached->setMulti(array_combine($this->prefixKeys(array_keys($items)), array_values($items)), $minutes * 60);
     }
@@ -43,9 +43,9 @@ class MemcachedStore extends IlluminateMemcachedStore implements StoreMulti
      * @param  array  $items
      * @return void
      */
-    public function foreverMulti(array $items)
+    public function foreverMany(array $items)
     {
-        $this->putMulti($items, 0);
+        $this->putMany($items, 0);
     }
 
     /**
@@ -54,7 +54,7 @@ class MemcachedStore extends IlluminateMemcachedStore implements StoreMulti
      * @param  array  $keys
      * @return array
      */
-    public function forgetMulti(array $keys)
+    public function forgetMany(array $keys)
     {
         if (!method_exists($this->memcached, 'deleteMulti')) {
             return array_combine($keys, array_map([$this, 'forget'], $keys));

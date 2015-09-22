@@ -5,7 +5,7 @@ namespace PulkitJalan\Cache\Providers;
 use Illuminate\Cache\CacheServiceProvider;
 use PulkitJalan\Cache\CacheManager;
 
-class MultiCacheServiceProvider extends CacheServiceProvider
+class LaravelServiceProvider extends CacheServiceProvider
 {
     /**
      * Register bindings in the container.

@@ -3,9 +3,9 @@
 namespace PulkitJalan\Cache;
 
 use Illuminate\Cache\DatabaseStore as IlluminateDatabaseStore;
-use PulkitJalan\Cache\Contracts\StoreMulti;
+use PulkitJalan\Cache\Contracts\StoreMany;
 
-class DatabaseStore extends IlluminateDatabaseStore implements StoreMulti
+class DatabaseStore extends IlluminateDatabaseStore implements StoreMany
 {
     /**
      * Retrieve an array item from the cache by key.
@@ -13,7 +13,7 @@ class DatabaseStore extends IlluminateDatabaseStore implements StoreMulti
      * @param  array  $keys
      * @return array
      */
-    public function getMulti(array $keys)
+    public function getMany(array $keys)
     {
         $cache = $this->table()->whereIn('key', $this->prefixKeys($keys))->get()->keyBy('key');
 
@@ -34,7 +34,7 @@ class DatabaseStore extends IlluminateDatabaseStore implements StoreMulti
         }
 
         if (!empty($expired)) {
-            $this->forgetMulti($expired);
+            $this->forgetMany($expired);
         }
 
         return $cached;
@@ -47,7 +47,7 @@ class DatabaseStore extends IlluminateDatabaseStore implements StoreMulti
      * @param  int    $minutes
      * @return void
      */
-    public function putMulti(array $items, $minutes)
+    public function putMany(array $items, $minutes)
     {
         $expiration = $this->getTime() + ($minutes * 60);
 
@@ -60,7 +60,7 @@ class DatabaseStore extends IlluminateDatabaseStore implements StoreMulti
             ];
         }
 
-        $this->forgetMulti(array_keys($items));
+        $this->forgetMany(array_keys($items));
 
         $this->table()->insert($insert);
     }
@@ -71,9 +71,9 @@ class DatabaseStore extends IlluminateDatabaseStore implements StoreMulti
      * @param  array  $items
      * @return void
      */
-    public function foreverMulti(array $items)
+    public function foreverMany(array $items)
     {
-        $this->putMulti($items, 5256000);
+        $this->putMany($items, 5256000);
     }
 
     /**
@@ -82,7 +82,7 @@ class DatabaseStore extends IlluminateDatabaseStore implements StoreMulti
      * @param  array  $keys
      * @return bool
      */
-    public function forgetMulti(array $keys)
+    public function forgetMany(array $keys)
     {
         $this->table()->whereIn('key', $this->prefixKeys($keys))->delete();
 

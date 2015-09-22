@@ -1,4 +1,4 @@
-Multicache
+Manycache
 =========
 
 > Adds array caching to Laravels cache drivers and custom drivers.
@@ -30,7 +30,7 @@ Then run `composer update` in your terminal to pull it in.
 Now add the following to the `providers` array in your `config/app.php`
 
 ```php
-PulkitJalan\Cache\Providers\MultiCacheServiceProvider::class
+PulkitJalan\Cache\Providers\LaravelServiceProvider::class
 ```
 
 ## Usage
@@ -44,7 +44,7 @@ Any existing cache drivers and custom drivers will have access to the following 
      * @param  array  $keys
      * @return array
      */
-    public function hasMulti(array $keys);
+    public function hasMany(array $keys);
 
     /**
      * Retrieve an array of items from the cache by keys.
@@ -53,7 +53,7 @@ Any existing cache drivers and custom drivers will have access to the following 
      * @param  mixed  $default
      * @return array
      */
-    public function getMulti(array $keys, $default = null);
+    public function getMany(array $keys, $default = null);
 
     /**
      * Retrieve an array of items from the cache and delete them.
@@ -62,7 +62,7 @@ Any existing cache drivers and custom drivers will have access to the following 
      * @param  mixed  $default
      * @return array
      */
-    public function pullMulti(array $keys, $default = null);
+    public function pullMany(array $keys, $default = null);
 
     /**
      * Store an array of items in the cache.
@@ -71,7 +71,7 @@ Any existing cache drivers and custom drivers will have access to the following 
      * @param  \DateTime|int  $minutes
      * @return void
      */
-    public function putMulti(array $items, $minutes);
+    public function putMany(array $items, $minutes);
 
     /**
      * Store an array of items in the cache if the key does not exist.
@@ -80,7 +80,7 @@ Any existing cache drivers and custom drivers will have access to the following 
      * @param  \DateTime|int  $minutes
      * @return bool
      */
-    public function addMulti(array $items, $minutes);
+    public function addMany(array $items, $minutes);
 
     /**
      * Store an array of items in the cache indefinitely.
@@ -88,7 +88,7 @@ Any existing cache drivers and custom drivers will have access to the following 
      * @param  array  $items
      * @return void
      */
-    public function foreverMulti(array $items);
+    public function foreverMany(array $items);
 
     /**
      * Get an array of items from the cache, or store the default value.
@@ -98,7 +98,7 @@ Any existing cache drivers and custom drivers will have access to the following 
      * @param  \Closure  $callback
      * @return mixed
      */
-    public function rememberMulti(array $keys, $minutes, Closure $callback);
+    public function rememberMany(array $keys, $minutes, Closure $callback);
 
     /**
      * Get an array of items from the cache, or store the default value forever.
@@ -107,7 +107,7 @@ Any existing cache drivers and custom drivers will have access to the following 
      * @param  \Closure  $callback
      * @return mixed
      */
-    public function searMulti(array $keys, Closure $callback);
+    public function searMany(array $keys, Closure $callback);
 
     /**
      * Get an array of items from the cache, or store the default value forever.
@@ -116,7 +116,7 @@ Any existing cache drivers and custom drivers will have access to the following 
      * @param  \Closure  $callback
      * @return mixed
      */
-    public function rememberForeverMulti(array $keys, Closure $callback);
+    public function rememberManyForever(array $keys, Closure $callback);
 
     /**
      * Remove an array of items from the cache.
@@ -124,10 +124,10 @@ Any existing cache drivers and custom drivers will have access to the following 
      * @param  array  $keys
      * @return bool
      */
-    public function forgetMulti(array $keys);
+    public function forgetMany(array $keys);
 ```
 
-Most of the existing methods like `has`, `get`, `put`, `forget`... will also accept an array and automatically run the relevant `Multi` function. As Expected the original methods will return results in the same format as they always have if called without an array.
+Most of the existing methods like `has`, `get`, `put`, `forget`... will also accept an array and automatically run the relevant `Many` function. As Expected the original methods will return results in the same format as they always have if called without an array.
 
 ## Examples
 
@@ -142,7 +142,7 @@ $keys = [
     'three', // exists
 ];
 
-Cache::hasMulti($keys);
+Cache::hasMany($keys);
 
 // or
 
@@ -160,7 +160,7 @@ $keys = [
     'three', // exists
 ];
 
-Cache::getMulti($keys);
+Cache::getMany($keys);
 
 // or
 
@@ -171,7 +171,7 @@ Cache::get($keys);
 
 ### Put
 
-The `put` method works a little differently to `putMulti`. Where `putMulti` accepts a key value array as the first parameter and the number of minutes to store for as the second parameter, the `put` method takes two separate arrays as the first two parameters and minutes as the third parameter.
+The `put` method works a little differently to `putMany`. Where `putMany` accepts a key value array as the first parameter and the number of minutes to store for as the second parameter, the `put` method takes two separate arrays as the first two parameters and minutes as the third parameter.
 
 Eg:
 
@@ -182,7 +182,7 @@ $data = [
     'key3' => 'value3',
 ];
 
-Cache::putMulti($data, 10);
+Cache::putMany($data, 10);
 
 // or
 
@@ -198,7 +198,7 @@ $keys = [
     'three',
 ];
 
-Cache::forgetMulti($keys);
+Cache::forgetMany($keys);
 
 // or
 
@@ -209,10 +209,10 @@ Cache::forget($keys);
 
 ## How does it work?
 
-For any driver that does not have an underlying `multi` method, the methods will call the non-multi version of the method for every item in the array.
+For any driver that does not have an underlying `Many` method, the methods will call the `Non-Many` version of the method for every item in the array.
 
-For example, if we are using the `apc` driver, which does not offer its own `getMulti` method, then the `get` method will be called for every item in the array.
+For example, when using the `apc` driver, which does not offer its own `getMany` method, then the `get` method will be called ten times if there are ten items in the input array.
 
-Now if we are using the `memcached` driver, which does have its own `getMulti` method, then that method will be called once and the data returned.
+Now, when using the `memcached` driver, which does have its own `getMany` method, then the `getMany` method will be called once and the data returned.
 
-Currently the `MemcachedStore`, `DatabaseStore`, `RedisStore` and the `ArrayStore` are the only ones to offer their own `Multi` methods. **More to come soon...**
+Currently the `MemcachedStore`, `DatabaseStore`, `RedisStore` and the `ArrayStore` are the only ones to offer their own `Many` methods. **More to come soon...**
