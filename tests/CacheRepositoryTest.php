@@ -241,7 +241,7 @@ class CacheRepositoryTest extends PHPUnit_Framework_TestCase
         $repo = $this->getRepository();
         $repo->getStore()->shouldReceive('get')->once()->with('foo')->andReturn('bar');
         $repo->getStore()->shouldReceive('get')->once()->with('baz')->andReturn('boom');
-        $repo->getStore()->shouldNotReceive('put');
+        $repo->getStore()->shouldNotReceive('forever');
         $result = $repo->rememberManyForever(['foo', 'baz'], function () { return 'bar'; });
         $this->assertEquals(['foo' => 'bar', 'baz' => 'boom'], $result);
 
@@ -273,6 +273,13 @@ class CacheRepositoryTest extends PHPUnit_Framework_TestCase
 
         $repo->getStore()->shouldReceive('forever')->once()->with('foo', 'bar');
         $this->assertEquals('bar', $repo->sear('foo', function () { return 'bar'; }));
+
+        $repo = $this->getRepository();
+        $repo->getStore()->shouldReceive('get')->once()->with('foo')->andReturn('bar');
+        $repo->getStore()->shouldReceive('get')->once()->with('baz')->andReturn('boom');
+        $repo->getStore()->shouldNotReceive('forever');
+        $result = $repo->sear(['foo', 'baz'], function () { return 'bar'; });
+        $this->assertEquals(['foo' => 'bar', 'baz' => 'boom'], $result);
 
         $repo = $this->getRepository(StoreMany::class);
         $repo->getStore()->shouldReceive('getMany')->andReturn(['foo' => null, 'baz' => null]);
