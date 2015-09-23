@@ -2,12 +2,10 @@
 
 namespace PulkitJalan\Cache;
 
-use Closure;
-use Illuminate\Cache\Repository as IlluminateRepository;
-use Illuminate\Cache\TagSet;
-use PulkitJalan\Cache\Contracts\Repository as CacheManyContract;
+use Illuminate\Cache\TaggedCache as IlliminateTaggedCache;
+use PulkitJalan\Cache\Contracts\StoreMany;
 
-class Repository extends IlluminateRepository implements CacheManyContract
+class TaggedCache extends IlliminateTaggedCache implements StoreMany
 {
     /**
      * Determine if an item exists in the cache.
@@ -64,7 +62,7 @@ class Repository extends IlluminateRepository implements CacheManyContract
      */
     public function getMany(array $keys, $default = null)
     {
-        $keys = array_fill_keys($keys, $default);
+        $keys = array_fill_keys($this->tagKeys($keys), $default);
 
         if (!method_exists($this->store, 'getMany')) {
             return array_combine(array_keys($keys), array_map([$this, 'get'], array_keys($keys), array_values($keys)));
@@ -74,45 +72,9 @@ class Repository extends IlluminateRepository implements CacheManyContract
 
         foreach ($values as $key => &$value) {
             if (is_null($value)) {
-                $this->fireCacheEvent('missed', [$key]);
-
                 $value = value(array_get($keys, $key, $default));
-            } else {
-                $this->fireCacheEvent('hit', [$key, $value]);
             }
         }
-
-        return $values;
-    }
-
-    /**
-     * Retrieve an item from the cache and delete it.
-     *
-     * @param  mixed  $key
-     * @param  mixed   $default
-     * @return mixed
-     */
-    public function pull($key, $default = null)
-    {
-        if (is_array($key)) {
-            return $this->pullMany($key, $default);
-        }
-
-        return parent::pull($key, $default);
-    }
-
-    /**
-     * Retrieve an array of items from the cache and delete them.
-     *
-     * @param  array  $keys
-     * @param  mixed  $default
-     * @return array
-     */
-    public function pullMany(array $keys, $default = null)
-    {
-        $values = $this->getMany($keys, $default);
-
-        $this->forgetMany($keys);
 
         return $values;
     }
@@ -149,11 +111,9 @@ class Repository extends IlluminateRepository implements CacheManyContract
             $minutes = $this->getMinutes($minutes);
 
             if (!is_null($minutes)) {
-                $this->store->putMany($items, $minutes);
+                $items = array_combine($this->tagKeys(array_keys($items)), array_values($items));
 
-                foreach ($items as $key => $value) {
-                    $this->fireCacheEvent('write', [$key, $value, $minutes]);
-                }
+                $this->store->putMany($items, $minutes);
             }
         }
     }
@@ -226,12 +186,40 @@ class Repository extends IlluminateRepository implements CacheManyContract
         if (!method_exists($this->store, 'foreverMany')) {
             array_map([$this, 'forever'], array_keys($items), array_values($items));
         } else {
-            $this->store->foreverMany($items);
+            $items = array_combine($this->tagKeys(array_keys($items)), array_values($items));
 
-            foreach ($items as $key => $value) {
-                $this->fireCacheEvent('write', [$key, $value, 0]);
-            }
+            $this->store->foreverMany($items);
         }
+    }
+
+    /**
+     * Remove an item from the cache.
+     *
+     * @param  mixed $key
+     * @return bool
+     */
+    public function forget($key)
+    {
+        if (is_array($key)) {
+            return $this->forgetMany($key);
+        }
+
+        return parent::forget($key);
+    }
+
+    /**
+     * Remove an array of items from the cache.
+     *
+     * @param  array  $keys
+     * @return bool
+     */
+    public function forgetMany(array $keys)
+    {
+        if (!method_exists($this->store, 'forgetMany')) {
+            return array_combine($keys, array_map([$this, 'forget'], $keys));
+        }
+
+        return $this->store->forgetMany($this->tagKeys($keys));
     }
 
     /**
@@ -349,53 +337,18 @@ class Repository extends IlluminateRepository implements CacheManyContract
     }
 
     /**
-     * Remove an item from the cache.
-     *
-     * @param  mixed $key
-     * @return bool
-     */
-    public function forget($key)
-    {
-        if (is_array($key)) {
-            return $this->forgetMany($key);
-        }
-
-        return parent::forget($key);
-    }
-
-    /**
-     * Remove an array of items from the cache.
+     * Prefix all keys and return an
+     * array of fully qualified keys for tagged items.
      *
      * @param  array  $keys
-     * @return bool
+     * @return array
      */
-    public function forgetMany(array $keys)
+    protected function tagKeys(array $keys)
     {
-        if (!method_exists($this->store, 'forgetMany')) {
-            return array_combine($keys, array_map([$this, 'forget'], $keys));
-        }
+        $prefix = $this->taggedItemKey('');
 
-        $success = $this->store->forgetMany($keys);
-
-        foreach ($success as $key => $value) {
-            $this->fireCacheEvent('delete', [$key]);
-        }
-
-        return $success;
-    }
-
-    /**
-     * Begin executing a new tags operation.
-     *
-     * @param  array|mixed  $names
-     * @return \Illuminate\Cache\TaggedCache
-     */
-    public function tags($names)
-    {
-        if (!method_exists($this->store, 'tags')) {
-            throw new \BadMethodCallException('Class '.get_class($this->store).' does not have a method \'tags\'');
-        }
-
-        return new TaggedCache($this, new TagSet($this, is_array($names) ? $names : func_get_args()));
+        return array_map(function ($key) use ($prefix) {
+            return $prefix.$key;
+        }, $keys);
     }
 }
