@@ -396,6 +396,6 @@ class Repository extends IlluminateRepository implements CacheManyContract
             throw new \BadMethodCallException('Class '.get_class($this->store).' does not have a method \'tags\'');
         }
 
-        return new TaggedCache($this, new TagSet($this, is_array($names) ? $names : func_get_args()));
+        return new TaggedCache($this->store, new TagSet($this->store, is_array($names) ? $names : func_get_args()));
     }
 }
