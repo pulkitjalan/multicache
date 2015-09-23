@@ -41,7 +41,7 @@ class TaggedCache extends IlliminateTaggedCache implements StoreMany
      * Retrieve an item from the cache by key.
      *
      * @param  mixed  $key
-     * @param  mixed   $default
+     * @param  mixed  $default
      * @return mixed
      */
     public function get($key, $default = null)
@@ -83,7 +83,7 @@ class TaggedCache extends IlliminateTaggedCache implements StoreMany
      * Store an item in the cache.
      *
      * @param  mixed  $key
-     * @param  mixed   $value
+     * @param  mixed  $value
      * @param  \DateTime|int  $minutes
      * @return void
      */
@@ -122,7 +122,7 @@ class TaggedCache extends IlliminateTaggedCache implements StoreMany
      * Store an item in the cache if the key does not exist.
      *
      * @param  mixed  $key
-     * @param  mixed   $value
+     * @param  mixed  $value
      * @param  \DateTime|int  $minutes
      * @return mixed
      */
@@ -163,7 +163,7 @@ class TaggedCache extends IlliminateTaggedCache implements StoreMany
      * Store an item in the cache indefinitely.
      *
      * @param  mixed  $key
-     * @param  mixed   $value
+     * @param  mixed  $value
      * @return void
      */
     public function forever($key, $value)

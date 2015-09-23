@@ -43,7 +43,7 @@ class Repository extends IlluminateRepository implements CacheManyContract
      * Retrieve an item from the cache by key.
      *
      * @param  mixed  $key
-     * @param  mixed   $default
+     * @param  mixed  $default
      * @return mixed
      */
     public function get($key, $default = null)
@@ -89,7 +89,7 @@ class Repository extends IlluminateRepository implements CacheManyContract
      * Retrieve an item from the cache and delete it.
      *
      * @param  mixed  $key
-     * @param  mixed   $default
+     * @param  mixed  $default
      * @return mixed
      */
     public function pull($key, $default = null)
@@ -121,7 +121,7 @@ class Repository extends IlluminateRepository implements CacheManyContract
      * Store an item in the cache.
      *
      * @param  mixed  $key
-     * @param  mixed   $value
+     * @param  mixed  $value
      * @param  \DateTime|int  $minutes
      * @return void
      */
@@ -162,7 +162,7 @@ class Repository extends IlluminateRepository implements CacheManyContract
      * Store an item in the cache if the key does not exist.
      *
      * @param  mixed  $key
-     * @param  mixed   $value
+     * @param  mixed  $value
      * @param  \DateTime|int  $minutes
      * @return mixed
      */
@@ -203,7 +203,7 @@ class Repository extends IlluminateRepository implements CacheManyContract
      * Store an item in the cache indefinitely.
      *
      * @param  mixed  $key
-     * @param  mixed   $value
+     * @param  mixed  $value
      * @return void
      */
     public function forever($key, $value)
@@ -388,7 +388,7 @@ class Repository extends IlluminateRepository implements CacheManyContract
      * Begin executing a new tags operation.
      *
      * @param  array|mixed  $names
-     * @return \Illuminate\Cache\TaggedCache
+     * @return \PulkitJalan\Cache\TaggedCache
      */
     public function tags($names)
     {
