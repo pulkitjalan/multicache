@@ -2,6 +2,7 @@
 
 namespace PulkitJalan\Cache;
 
+use Closure;
 use Illuminate\Cache\TaggedCache as IlliminateTaggedCache;
 use PulkitJalan\Cache\Contracts\StoreMany;
 
