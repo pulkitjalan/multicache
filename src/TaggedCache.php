@@ -4,6 +4,7 @@ namespace PulkitJalan\Cache;
 
 use Closure;
 use Illuminate\Cache\TaggedCache as IlliminateTaggedCache;
+use Illuminate\Support\Arr;
 use PulkitJalan\Cache\Contracts\StoreMany;
 
 class TaggedCache extends IlliminateTaggedCache implements StoreMany
@@ -147,7 +148,7 @@ class TaggedCache extends IlliminateTaggedCache implements StoreMany
     {
         $values = $this->getMany(array_keys($items));
 
-        $fill = array_where($values, function ($key, $value) {
+        $fill = Arr::where($values, function ($key, $value) {
             return is_null($value);
         });
 
@@ -252,7 +253,7 @@ class TaggedCache extends IlliminateTaggedCache implements StoreMany
     {
         $values = $this->getMany($keys);
 
-        $items = array_where($values, function ($key, $value) {
+        $items = Arr::where($values, function ($key, $value) {
             return is_null($value);
         });
 
@@ -322,7 +323,7 @@ class TaggedCache extends IlliminateTaggedCache implements StoreMany
     {
         $values = $this->getMany($keys);
 
-        $items = array_where($values, function ($key, $value) {
+        $items = Arr::where($values, function ($key, $value) {
             return is_null($value);
         });
 

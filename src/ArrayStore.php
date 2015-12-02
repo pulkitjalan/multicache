@@ -3,6 +3,7 @@
 namespace PulkitJalan\Cache;
 
 use Illuminate\Cache\ArrayStore as IlluminateArrayStore;
+use Illuminate\Support\Arr;
 use PulkitJalan\Cache\Contracts\StoreMany;
 
 class ArrayStore extends IlluminateArrayStore implements StoreMany
@@ -15,7 +16,7 @@ class ArrayStore extends IlluminateArrayStore implements StoreMany
      */
     public function getMany(array $keys)
     {
-        return array_merge(array_fill_keys($keys, null), array_only($this->storage, $this->prefixKeys($keys)));
+        return array_merge(array_fill_keys($keys, null), Arr::only($this->storage, $this->prefixKeys($keys)));
     }
 
     /**

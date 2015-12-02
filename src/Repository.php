@@ -5,6 +5,7 @@ namespace PulkitJalan\Cache;
 use Closure;
 use Illuminate\Cache\Repository as IlluminateRepository;
 use Illuminate\Cache\TagSet;
+use Illuminate\Support\Arr;
 use PulkitJalan\Cache\Contracts\Repository as CacheManyContract;
 
 class Repository extends IlluminateRepository implements CacheManyContract
@@ -186,7 +187,7 @@ class Repository extends IlluminateRepository implements CacheManyContract
     {
         $values = $this->getMany(array_keys($items));
 
-        $fill = array_where($values, function ($key, $value) {
+        $fill = Arr::where($values, function ($key, $value) {
             return is_null($value);
         });
 
@@ -263,7 +264,7 @@ class Repository extends IlluminateRepository implements CacheManyContract
     {
         $values = $this->getMany($keys);
 
-        $items = array_where($values, function ($key, $value) {
+        $items = Arr::where($values, function ($key, $value) {
             return is_null($value);
         });
 
@@ -333,7 +334,7 @@ class Repository extends IlluminateRepository implements CacheManyContract
     {
         $values = $this->getMany($keys);
 
-        $items = array_where($values, function ($key, $value) {
+        $items = Arr::where($values, function ($key, $value) {
             return is_null($value);
         });
 

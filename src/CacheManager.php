@@ -4,6 +4,7 @@ namespace PulkitJalan\Cache;
 
 use Illuminate\Cache\CacheManager as IlluminateCacheManager;
 use Illuminate\Contracts\Cache\Store;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Arr;
 
 class CacheManager extends IlluminateCacheManager
@@ -77,9 +78,9 @@ class CacheManager extends IlluminateCacheManager
     {
         $repository = new Repository($store);
 
-        if ($this->app->bound('Illuminate\Contracts\Events\Dispatcher')) {
+        if ($this->app->bound(Dispatcher::class)) {
             $repository->setEventDispatcher(
-                $this->app['Illuminate\Contracts\Events\Dispatcher']
+                $this->app[Dispatcher::class]
             );
         }
 
