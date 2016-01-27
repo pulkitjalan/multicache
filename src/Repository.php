@@ -36,7 +36,7 @@ class Repository extends IlluminateRepository implements CacheManyContract
         $values = $this->getMany($keys);
 
         return array_map(function ($value) {
-            return !is_null($value);
+            return ! is_null($value);
         }, $values);
     }
 
@@ -67,7 +67,7 @@ class Repository extends IlluminateRepository implements CacheManyContract
     {
         $keys = array_fill_keys($keys, $default);
 
-        if (!method_exists($this->store, 'getMany')) {
+        if (! method_exists($this->store, 'getMany')) {
             return array_combine(array_keys($keys), array_map([$this, 'get'], array_keys($keys), array_values($keys)));
         }
 
@@ -144,12 +144,12 @@ class Repository extends IlluminateRepository implements CacheManyContract
      */
     public function putMany(array $items, $minutes)
     {
-        if (!method_exists($this->store, 'putMany')) {
+        if (! method_exists($this->store, 'putMany')) {
             array_map([$this, 'put'], array_keys($items), array_values($items), array_fill(0, count($items), $minutes));
         } else {
             $minutes = $this->getMinutes($minutes);
 
-            if (!is_null($minutes)) {
+            if (! is_null($minutes)) {
                 $this->store->putMany($items, $minutes);
 
                 foreach ($items as $key => $value) {
@@ -224,7 +224,7 @@ class Repository extends IlluminateRepository implements CacheManyContract
      */
     public function foreverMany(array $items)
     {
-        if (!method_exists($this->store, 'foreverMany')) {
+        if (! method_exists($this->store, 'foreverMany')) {
             array_map([$this, 'forever'], array_keys($items), array_values($items));
         } else {
             $this->store->foreverMany($items);
@@ -268,7 +268,7 @@ class Repository extends IlluminateRepository implements CacheManyContract
             return is_null($value);
         });
 
-        if (!empty($items)) {
+        if (! empty($items)) {
             $items = array_combine(array_keys($items), $callback(array_keys($items)));
 
             $this->putMany($items, $minutes);
@@ -338,7 +338,7 @@ class Repository extends IlluminateRepository implements CacheManyContract
             return is_null($value);
         });
 
-        if (!empty($items)) {
+        if (! empty($items)) {
             $items = array_combine(array_keys($items), $callback(array_keys($items)));
 
             $this->foreverMany($items);
@@ -372,7 +372,7 @@ class Repository extends IlluminateRepository implements CacheManyContract
      */
     public function forgetMany(array $keys)
     {
-        if (!method_exists($this->store, 'forgetMany')) {
+        if (! method_exists($this->store, 'forgetMany')) {
             return array_combine($keys, array_map([$this, 'forget'], $keys));
         }
 
@@ -393,7 +393,7 @@ class Repository extends IlluminateRepository implements CacheManyContract
      */
     public function tags($names)
     {
-        if (!method_exists($this->store, 'tags')) {
+        if (! method_exists($this->store, 'tags')) {
             throw new \BadMethodCallException('Class '.get_class($this->store).' does not have a method \'tags\'');
         }
 

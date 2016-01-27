@@ -1,6 +1,5 @@
 <?php
 
-use Mockery as m;
 use PulkitJalan\Cache\Repository;
 use Illuminate\Contracts\Cache\Store;
 use PulkitJalan\Cache\Contracts\StoreMany;
@@ -9,7 +8,7 @@ class CacheRepositoryTest extends PHPUnit_Framework_TestCase
 {
     public function tearDown()
     {
-        m::close();
+        Mockery::close();
     }
 
     public function testGetReturnsValueFromCache()
@@ -295,6 +294,6 @@ class CacheRepositoryTest extends PHPUnit_Framework_TestCase
 
     protected function getRepository($contract = Store::class)
     {
-        return new Repository(m::mock($contract));
+        return new Repository(Mockery::mock($contract));
     }
 }

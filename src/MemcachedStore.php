@@ -56,7 +56,7 @@ class MemcachedStore extends IlluminateMemcachedStore implements StoreMany
      */
     public function forgetMany(array $keys)
     {
-        if (!method_exists($this->memcached, 'deleteMulti')) {
+        if (! method_exists($this->memcached, 'deleteMulti')) {
             return array_combine($keys, array_map([$this, 'forget'], $keys));
         }
 

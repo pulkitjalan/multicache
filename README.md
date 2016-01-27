@@ -13,7 +13,9 @@ Multicache
 ## Requirements
 
 - PHP >= 5.5.9
-- Laravel >= 5.1
+- Laravel = 5.1
+
+Laravel 5.2 natively supports a caching multiple items.
 
 ## Installation
 

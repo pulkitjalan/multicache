@@ -7,7 +7,7 @@ use Illuminate\Cache\TaggedCache as IlliminateTaggedCache;
 use Illuminate\Support\Arr;
 use PulkitJalan\Cache\Contracts\StoreMany;
 
-class TaggedCache extends IlliminateTaggedCache implements StoreMany
+class TaggedCache extends IlliminateTaggedCache
 {
     /**
      * Determine if an item exists in the cache.
@@ -35,7 +35,7 @@ class TaggedCache extends IlliminateTaggedCache implements StoreMany
         $values = $this->getMany($keys);
 
         return array_map(function ($value) {
-            return !is_null($value);
+            return ! is_null($value);
         }, $values);
     }
 
@@ -66,7 +66,7 @@ class TaggedCache extends IlliminateTaggedCache implements StoreMany
     {
         $keys = array_fill_keys($this->tagKeys($keys), $default);
 
-        if (!method_exists($this->store, 'getMany')) {
+        if (! method_exists($this->store, 'getMany')) {
             return array_combine(array_keys($keys), array_map([$this, 'get'], array_keys($keys), array_values($keys)));
         }
 
@@ -107,12 +107,12 @@ class TaggedCache extends IlliminateTaggedCache implements StoreMany
      */
     public function putMany(array $items, $minutes)
     {
-        if (!method_exists($this->store, 'putMany')) {
+        if (! method_exists($this->store, 'putMany')) {
             array_map([$this, 'put'], array_keys($items), array_values($items), array_fill(0, count($items), $minutes));
         } else {
             $minutes = $this->getMinutes($minutes);
 
-            if (!is_null($minutes)) {
+            if (! is_null($minutes)) {
                 $items = array_combine($this->tagKeys(array_keys($items)), array_values($items));
 
                 $this->store->putMany($items, $minutes);
@@ -185,7 +185,7 @@ class TaggedCache extends IlliminateTaggedCache implements StoreMany
      */
     public function foreverMany(array $items)
     {
-        if (!method_exists($this->store, 'foreverMany')) {
+        if (! method_exists($this->store, 'foreverMany')) {
             array_map([$this, 'forever'], array_keys($items), array_values($items));
         } else {
             $items = array_combine($this->tagKeys(array_keys($items)), array_values($items));
@@ -217,7 +217,7 @@ class TaggedCache extends IlliminateTaggedCache implements StoreMany
      */
     public function forgetMany(array $keys)
     {
-        if (!method_exists($this->store, 'forgetMany')) {
+        if (! method_exists($this->store, 'forgetMany')) {
             return array_combine($keys, array_map([$this, 'forget'], $keys));
         }
 
@@ -257,7 +257,7 @@ class TaggedCache extends IlliminateTaggedCache implements StoreMany
             return is_null($value);
         });
 
-        if (!empty($items)) {
+        if (! empty($items)) {
             $items = array_combine(array_keys($items), $callback(array_keys($items)));
 
             $this->putMany($items, $minutes);
@@ -327,7 +327,7 @@ class TaggedCache extends IlliminateTaggedCache implements StoreMany
             return is_null($value);
         });
 
-        if (!empty($items)) {
+        if (! empty($items)) {
             $items = array_combine(array_keys($items), $callback(array_keys($items)));
 
             $this->foreverMany($items);

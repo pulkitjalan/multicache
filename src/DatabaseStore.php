@@ -23,7 +23,7 @@ class DatabaseStore extends IlluminateDatabaseStore implements StoreMany
             $item = $cache->get($this->getPrefix().$key);
 
             if (time() >= data_get($item, 'expiration')) {
-                if (!is_null($item)) {
+                if (! is_null($item)) {
                     $expired[] = $key;
                 }
                 $cached[$key] = null;
@@ -33,7 +33,7 @@ class DatabaseStore extends IlluminateDatabaseStore implements StoreMany
             $cached[$key] = $this->encrypter->decrypt(data_get($item, 'value'));
         }
 
-        if (!empty($expired)) {
+        if (! empty($expired)) {
             $this->forgetMany($expired);
         }
 
